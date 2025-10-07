@@ -9,7 +9,16 @@ public class LinkedList <T>{
         }
 
         public void add(Node n){
-            if(LinkedList.)
+            Node<T> prevNode;
+            if(node == null)
+                node = n;
+            else{
+                prevNode = node;
+                while(node.next != null) {
+                    prevNode = node.next;
+                }
+                prevNode.next = n;
+            }
 
         }
         public boolean isEmpty(){
