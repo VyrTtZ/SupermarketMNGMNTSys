@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml">
-    <!-- FXML templates -->
+<AnchorPane fx:id="anchorDashboard" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #590d36;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.supermarketmngmntsys.DashboardController">
+   <children>
+      <Label layoutX="507.0" layoutY="25.0" style="-fx-text-fill: #e6e6e6; -fx-font-family: 'Segoe UI'; -fx-font-size: 36px; -fx-font-weight: bold;" text="Dashboard" />
 
+      <TextField fx:id="textInDash" layoutX="956.0" layoutY="90.0" promptText="Name of the market" style="-fx-background-color: #1e1e1e; -fx-text-fill: #e6e6e6; -fx-background-radius: 6; -fx-padding: 5;" />
 
-</VBox>
+      <Button layoutX="1121.0" layoutY="91.0" onMouseClicked="#addMarket" style="-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Add" />
+
+      <GridPane fx:id="marketsGrid" layoutX="41.0" layoutY="150.0" prefHeight="620.0" prefWidth="1120.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10; -fx-padding: 10;" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="39.0" AnchorPane.topAnchor="150.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints prefHeight="200.0" vgrow="SOMETIMES" />
+            <RowConstraints prefHeight="200.0" vgrow="SOMETIMES" />
+            <RowConstraints prefHeight="200.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+
+         <Pane fx:id="pane1" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" />
+         <Pane fx:id="pane2" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="1" />
+         <Pane fx:id="pane3" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="2" />
+         <Pane fx:id="pane4" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="3" />
+         <Pane fx:id="pane5" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="4" />
+         <Pane fx:id="pane6" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="5" />
+
+         <Pane fx:id="pane7" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.rowIndex="1" />
+         <Pane fx:id="pane8" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <Pane fx:id="pane9" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+         <Pane fx:id="pane10" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+         <Pane fx:id="pane11" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+         <Pane fx:id="pane12" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+
+         <Pane fx:id="pane13" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.rowIndex="2" />
+         <Pane fx:id="pane14" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Pane fx:id="pane15" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+         <Pane fx:id="pane16" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+         <Pane fx:id="pane17" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+         <Pane fx:id="pane18" style="-fx-background-color: #2d2d30; -fx-background-radius: 10;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+      </GridPane>
+   </children>
+</AnchorPane>

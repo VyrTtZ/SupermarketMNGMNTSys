@@ -7,11 +7,13 @@ public class Aisle {
     private String name;
     private LinkedList<Shelf> shelves;
     private LinkedList<Integer> size;
+    private int refrigerated;
 
-    public Aisle(String name, LinkedList<Shelf> shelves, LinkedList<Integer> size) {
+    public Aisle(String name, LinkedList<Shelf> shelves, LinkedList<Integer> size, int refrigerated) {
         this.name = name;
         this.shelves = shelves;
         this.size = size;
+        this.refrigerated = refrigerated;
     }
 
     public String getName() {

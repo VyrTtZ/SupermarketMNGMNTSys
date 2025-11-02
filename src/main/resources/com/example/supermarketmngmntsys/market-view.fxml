@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #590d36;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.supermarketmngmntsys.MarketController">
+   <children>
+      <Button layoutX="14.0" layoutY="14.0" onAction="#ret" style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-family: 'Segoe UI'; -fx-background-radius: 10;" text="Back">
+         <font>
+            <Font name="Segoe UI" size="12.0" />
+         </font>
+      </Button>
+
+      <Pane fx:id="namePane" layoutX="386.0" layoutY="14.0" prefHeight="59.0" prefWidth="640.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.leftAnchor="386" AnchorPane.rightAnchor="210" AnchorPane.topAnchor="14" />
+
+      <Pane fx:id="treePane" layoutX="14.0" layoutY="87.0" prefWidth="240.0" style="-fx-background-color: #252526; -fx-background-radius: 10;" AnchorPane.bottomAnchor="180" AnchorPane.leftAnchor="14" AnchorPane.topAnchor="87" />
+
+      <Pane fx:id="marketViewPane" prefHeight="400.0" prefWidth="734.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="313.0" AnchorPane.leftAnchor="280" AnchorPane.rightAnchor="186.0" AnchorPane.topAnchor="87">
+         <children>
+            <Canvas fx:id="gridCanvas" height="415.0" layoutX="-8.0" layoutY="-7.0" width="749.0" />
+            <Spinner fx:id="floorNum" editable="true" layoutX="662.0" layoutY="14.0" prefHeight="25.0" prefWidth="58.0" />
+         </children>
+      </Pane>
+
+      <VBox fx:id="editPane" alignment="TOP_CENTER" prefHeight="150.0" spacing="10" style="-fx-background-color: #2d2d30; -fx-padding: 15; -fx-background-radius: 10;" AnchorPane.bottomAnchor="14" AnchorPane.leftAnchor="280" AnchorPane.rightAnchor="280">
+         <children>
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e6e6e6;" text="Add Elements" />
+            <VBox fx:id="addOptionsPane" alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #1e1e1e; -fx-background-radius: 8; -fx-padding: 10;" />
+         </children>
+      </VBox>
+
+   </children>
+</AnchorPane>

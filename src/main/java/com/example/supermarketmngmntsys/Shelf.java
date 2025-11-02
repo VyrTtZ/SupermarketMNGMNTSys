@@ -3,22 +3,22 @@ package com.example.supermarketmngmntsys;
 import LinkedList.LinkedList;
 
 public class Shelf {
-    private String name;
+    private int number;
     private LinkedList<GoodItem> goods;
     private LinkedList<Integer> size;
 
-    public Shelf(String name, LinkedList<GoodItem> goods, LinkedList<Integer> size) {
-        this.name = name;
+    public Shelf(int number, LinkedList<GoodItem> goods, LinkedList<Integer> size) {
+        this.number = number;
         this.goods = goods;
         this.size = size;
     }
 
-    public String getName() {
-        return name;
+    public int getNumber() {
+        return number;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public LinkedList<GoodItem> getGoods() {
