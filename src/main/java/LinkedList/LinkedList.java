@@ -69,6 +69,20 @@ public class LinkedList<T> implements Iterable<T> {
         return (current != null) ? current.data : null;
     }
 
+    public static <T> void removeAllInstances(LinkedList<T> list, T target) {
+        if (list == null || list.isEmpty()) return;
+
+        int i = 0;
+        while (i < list.size()) {
+            T item = list.get(i);
+            if (item == target || (item != null && item.equals(target))) {
+                list.remove(list.get(i)); // assume your LinkedList has a remove(index) method
+            } else {
+                i++;
+            }
+        }
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {

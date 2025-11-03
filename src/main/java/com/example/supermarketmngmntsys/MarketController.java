@@ -5,11 +5,14 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static LinkedList.LinkedList.removeAllInstances;
 
 public class MarketController {
 
@@ -50,10 +53,10 @@ public class MarketController {
         namePane.getChildren().clear();
         Label nameLabel = new Label(selectedSupermarket.getName());
         namePane.getChildren().add(nameLabel);
-        /*SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1*selectedSupermarket.getFloors().size(), selectedSupermarket.getFloors().size(), 0, 1);
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1*selectedSupermarket.getFloors().size(), selectedSupermarket.getFloors().size(), 0, 1);
 
         floorNum.setValueFactory(valueFactory);
-        floorNum.setEditable(true);*/
+        floorNum.setEditable(true);
 
         buildTree();
     }
@@ -218,7 +221,6 @@ public class MarketController {
             }
             a.getShelves().add(new Shelf(Integer.parseInt(numberField.getText().trim()), new LinkedList<GoodItem>(), new LinkedList<Integer>()));
             numberField.clear();
-            drawFloor(numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
             buildTree();
         });
 
@@ -260,14 +262,31 @@ public class MarketController {
 
                 s.getGoods().add(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size));
                 nameField.clear(); priceField.clear(); quantityField.clear(); massField.clear(); sizeField.clear();
-                drawFloor(numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
+                buildTree();
+            } catch (NumberFormatException ex) {
+                showAlert("Invalid price");
+            }
+        });
+        Button smartAddButton = new Button("Smart Add");
+        addButton.setOnAction(e -> {
+            try {
+                String name = nameField.getText().trim();
+                double price = Double.parseDouble(priceField.getText().trim());
+                int quantity = Integer.parseInt(quantityField.getText().trim());
+                double mass = Double.parseDouble(massField.getText().trim());
+                int size = Integer.parseInt(sizeField.getText().trim());
+
+                Shelf target = similarityShelf(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size));
+
+                target.getGoods().add(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size));
+                nameField.clear(); priceField.clear(); quantityField.clear(); massField.clear(); sizeField.clear();
                 buildTree();
             } catch (NumberFormatException ex) {
                 showAlert("Invalid price");
             }
         });
 
-        HBox row = new HBox(5, label, nameField, priceField, quantityField, massField, sizeField, addButton);
+        HBox row = new HBox(5, label, nameField, priceField, quantityField, massField, sizeField, addButton, smartAddButton);
         return row;
     }
 
@@ -281,11 +300,64 @@ public class MarketController {
         treeMap.put(root, selectedSupermarket);
 
         addToTree(selectedSupermarket.getFloors(), root);
-
+        root.setExpanded(true);
         TreeView<String> treeView = new TreeView<>(root);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
             if (newItem != null) currentObject = treeMap.get(newItem);
+        });
+        treeView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) { // right-click
+                TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+                if (selectedItem == null) return;
+
+                Object target = treeMap.get(selectedItem);
+                if (target == null) return;
+
+                if (target instanceof Floor f) {
+                    removeAllInstances(selectedSupermarket.getFloors(), f);
+                    return;
+                }
+                if (target instanceof FloorArea fa) {
+                    for (Floor floor : selectedSupermarket.getFloors()) {
+                        removeAllInstances(floor.getFloorAreas(), fa);
+                    }
+                    return;
+                }
+                if (target instanceof Aisle a) {
+                    for (Floor floor : selectedSupermarket.getFloors()) {
+                        for (FloorArea area : floor.getFloorAreas()) {
+                            removeAllInstances(area.getAisles(), a);
+                        }
+                    }
+                    return;
+                }
+
+                if (target instanceof Shelf s) {
+                    for (Floor floor : selectedSupermarket.getFloors()) {
+                        for (FloorArea area : floor.getFloorAreas()) {
+                            for (Aisle aisle : area.getAisles()) {
+                                removeAllInstances(aisle.getShelves(), s);
+                            }
+                        }
+                    }
+                    return;
+                }
+                if (target instanceof GoodItem g) {
+                    for (Floor floor : selectedSupermarket.getFloors()) {
+                        for (FloorArea area : floor.getFloorAreas()) {
+                            for (Aisle aisle : area.getAisles()) {
+                                for (Shelf shelf : aisle.getShelves()) {
+                                    removeAllInstances(shelf.getGoods(), g);
+                                }
+                            }
+                        }
+                    }
+                }
+                buildTree();
+
+                System.out.println("Removed all references of: " + selectedItem.getValue());
+            }
         });
 
         treePane.getChildren().add(treeView);
@@ -382,6 +454,35 @@ public class MarketController {
         }
     }
 
+    private Shelf similarityShelf(GoodItem newGood) {
+        Shelf bestShelf = null;
+        double bestSimilarity = -1;
+
+        for (Floor floor : selectedSupermarket.getFloors()) {
+            for (FloorArea area : floor.getFloorAreas()) {
+                for (Aisle aisle : area.getAisles()) {
+                    for (Shelf shelf : aisle.getShelves()) {
+                        for (GoodItem existingGood : shelf.getGoods()) {
+
+                            double nameDiff = newGood.getName().compareTo(existingGood.getName());
+                            double priceDiff = Math.abs(newGood.getPrice() - existingGood.getPrice());
+                            double massDiff = Math.abs(newGood.getMass() - existingGood.getMass());
+                            double sizeDiff = Math.abs(newGood.getSize() - existingGood.getSize());
+
+                            double similarity = 1.0 / (1.0 + Math.pow(Math.E, -1*(priceDiff + massDiff + sizeDiff + nameDiff))); //Sigmoid function of the total values 1/1+e^-x
+
+                            if (similarity > bestSimilarity) {
+                                bestSimilarity = similarity;
+                                bestShelf = shelf;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestShelf;
+    }
 
     private void eraseMarket(){
         LinkedList<Floor> emptyFloors = new LinkedList<Floor>();
