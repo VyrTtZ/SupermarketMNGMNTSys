@@ -39,4 +39,12 @@ public class Aisle {
     public void setSize(LinkedList<Integer> size) {
         this.size = size;
     }
+
+    public int getRefrigerated() {
+        return refrigerated;
+    }
+
+    public void setRefrigerated(int refrigerated) {
+        this.refrigerated = refrigerated;
+    }
 }

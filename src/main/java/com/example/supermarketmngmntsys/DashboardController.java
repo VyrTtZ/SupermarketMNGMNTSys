@@ -1,15 +1,20 @@
 package com.example.supermarketmngmntsys;
 
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import LinkedList.LinkedList;
 
+import java.awt.*;
+
 public class DashboardController {
 
-    private final LinkedList<Supermarket> list = Parent.getMarkets();
+    private LinkedList<Supermarket> list = Parent.getMarkets();
 
     @FXML
     private GridPane marketsGrid;
@@ -57,7 +62,27 @@ public class DashboardController {
             Supermarket s = list.get(i);
             Pane pane = (Pane) marketsGrid.getChildren().get(i);
             Label label = new Label(s.getName());
-            pane.getChildren().add(label);
+            label.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 30px;");
+            Button eraseMarket = new Button("-");
+            eraseMarket.setOnAction(actionEvent -> {
+                LinkedList<Floor> emptyFloors = new LinkedList<Floor>();
+                s.setFloors(emptyFloors);
+            });
+            Button saveButton = new Button("Save");
+            saveButton.setOnAction(actionEvent -> {
+                try {
+                    Parent.save();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            Canvas gridCanvas = new Canvas();
+            pane.getChildren().addAll(label, eraseMarket, saveButton, gridCanvas);
+            if(!s.getFloors().isEmpty())
+                Utilities.drawFloor(gridCanvas, s.getFloors().get(0));
+
+
 
             pane.setOnMousePressed(e -> {
                 if (e.isPrimaryButtonDown()) {
@@ -70,6 +95,7 @@ public class DashboardController {
                     refreshGrid();
                 }
             });
+
         }
         //---------------------------------
     }

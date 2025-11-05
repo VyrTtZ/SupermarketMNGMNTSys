@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #590d36;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.supermarketmngmntsys.MarketController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.supermarketmngmntsys.MarketController">
    <children>
       <Button layoutX="14.0" layoutY="14.0" onAction="#ret" style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-family: 'Segoe UI'; -fx-background-radius: 10;" text="Back">
          <font>
@@ -13,9 +13,13 @@
          </font>
       </Button>
 
-      <Pane fx:id="namePane" layoutX="386.0" layoutY="14.0" prefHeight="59.0" prefWidth="640.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.leftAnchor="386" AnchorPane.rightAnchor="210" AnchorPane.topAnchor="14" />
+      <Pane fx:id="namePane" layoutX="280.0" layoutY="14.0" prefHeight="59.0" prefWidth="640.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="316.0" AnchorPane.topAnchor="14.0" />
 
-      <Pane fx:id="treePane" layoutX="14.0" layoutY="87.0" prefWidth="240.0" style="-fx-background-color: #252526; -fx-background-radius: 10;" AnchorPane.bottomAnchor="180" AnchorPane.leftAnchor="14" AnchorPane.topAnchor="87" />
+      <Pane fx:id="treePane" layoutX="14.0" layoutY="87.0" prefWidth="240.0" style="-fx-background-color: #252526; -fx-background-radius: 10;" AnchorPane.bottomAnchor="180" AnchorPane.leftAnchor="14" AnchorPane.topAnchor="87">
+         <children>
+            <VBox fx:id="sliderPane" visible="false" layoutY="447.0" prefHeight="86.0" prefWidth="240.0" spacing="5" style="-fx-background-color: #3a3a3a; -fx-padding: 10; -fx-background-radius: 8;" />
+
+         </children></Pane>
 
       <Pane fx:id="marketViewPane" prefHeight="400.0" prefWidth="626.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="313.0" AnchorPane.leftAnchor="280" AnchorPane.rightAnchor="294.0" AnchorPane.topAnchor="87">
          <children>
@@ -24,13 +28,19 @@
          </children>
       </Pane>
 
-      <VBox fx:id="editPane" alignment="TOP_CENTER" prefHeight="150.0" spacing="10" style="-fx-background-color: #2d2d30; -fx-padding: 15; -fx-background-radius: 10;" AnchorPane.bottomAnchor="14" AnchorPane.leftAnchor="280" AnchorPane.rightAnchor="280">
+      <VBox fx:id="editPane" alignment="TOP_CENTER" prefHeight="150.0" prefWidth="888.0" spacing="10" style="-fx-background-color: #2d2d30; -fx-padding: 15; -fx-background-radius: 10;" AnchorPane.bottomAnchor="14" AnchorPane.leftAnchor="280" AnchorPane.rightAnchor="32.0">
          <children>
             <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e6e6e6;" text="Add Elements" />
             <VBox fx:id="addOptionsPane" alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #1e1e1e; -fx-background-radius: 8; -fx-padding: 10;" />
          </children>
       </VBox>
-      <VBox layoutX="940.0" layoutY="87.0" prefHeight="637.0" prefWidth="155.0" styleClass="-fx-background-radius" />
+      <VBox fx:id="reportPane" layoutX="14.0" layoutY="634.0" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: #e1e1e1;" styleClass="-fx-background-radius" />
+      <Pane fx:id="stockPane" layoutX="940.0" layoutY="261.0" prefHeight="230.0" prefWidth="226.0" />
+      <Pane fx:id="searchPane" layoutX="946.0" layoutY="14.0" prefHeight="210.0" prefWidth="240.0" style="-fx-background-color: #000000;">
+         <children>
+            <TextField fx:id="searchBar" layoutX="14.0" layoutY="14.0" />
+            <Button fx:id="searchButton" layoutX="174.0" layoutY="14.0" mnemonicParsing="false" onAction="#search" text="Search" />
+         </children></Pane>
 
    </children>
 </AnchorPane>

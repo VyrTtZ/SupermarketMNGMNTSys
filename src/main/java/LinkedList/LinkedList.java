@@ -101,4 +101,16 @@ public class LinkedList<T> implements Iterable<T> {
             }
         };
     }
+
+    public boolean contains(T obj) {
+            Node node = head;
+            while (node != null) {
+                if (node.data.equals(obj)) {
+                    return true;
+                }
+                node = node.next;
+            }
+            return false;
+
+    }
 }
