@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -24,9 +26,11 @@ public class Parent {
     }
 
     public static void save() throws Exception {
+
+        System.setProperty("xstream.allowUnsafe", "true");
         XStream xstream = new XStream(new DomDriver());
         XStream.setupDefaultSecurity(xstream);
-        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class}); // fixed
+        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class});
         ObjectOutputStream out = xstream.createObjectOutputStream(new FileWriter("supermarketmngmntSys.xml"));
         out.writeObject(markets);
         out.close();
@@ -34,10 +38,11 @@ public class Parent {
 
     @SuppressWarnings("unchecked")
     public void load() throws Exception {
+        System.setProperty("xstream.allowUnsafe", "true");
         XStream xstream = new XStream(new DomDriver());
         XStream.setupDefaultSecurity(xstream);
-        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class}); // fixed
-        ObjectInputStream is = xstream.createObjectInputStream(new FileReader("supermarketmngmntSys.xml")); // fixed file name
+        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class});
+        ObjectInputStream is = xstream.createObjectInputStream(new FileReader("supermarketmngmntSys.xml"));
         markets = (LinkedList<Supermarket>) is.readObject();
         is.close();
     }

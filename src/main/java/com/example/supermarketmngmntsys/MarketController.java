@@ -64,6 +64,7 @@ public class MarketController {
         buildTree();
         showAllStock();
         Utilities.drawFloor(gridCanvas, numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
+
     }
 
     private Floor numToFloor(int i){
@@ -330,8 +331,8 @@ public class MarketController {
 
             existanceCheckGood(name, price, quantity, mass, size, desc, img);
 
-            /*Shelf target = similarityShelf(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size));
-            target.getGoods().add(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size)); FIX THIS NEEDS TO BE UPDATED WITH 2 NEW ARGS*/
+            Shelf target = similarityShelf(selectedSupermarket,new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            target.getGoods().add(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img));
 
             nameField.clear();
             priceField.clear();
@@ -362,8 +363,6 @@ public class MarketController {
         treeView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
             if (newItem != null) currentObject = treeMap.get(newItem);
         });
-        // Assume you have in your FXML: 
-// <VBox fx:id="sliderPane" visible="false"/>
 
         treeView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
@@ -373,17 +372,15 @@ public class MarketController {
                     TreeItem<String> parentItem = selectedItem.getParent();
                     Object parentObj = treeMap.get(parentItem);
 
-                    sliderPane.getChildren().clear(); // clear previous controls
+                    sliderPane.getChildren().clear();
 
                     if (obj instanceof GoodItem good) {
                         System.out.println("testing");
                         sliderPane.setVisible(true);
 
-                        // Label
                         Label label = new Label("Remove quantity for: " + good.getName());
                         label.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
 
-                        // Slider
                         Slider slider = new Slider(1, good.getStock(), 1);
                         slider.setMajorTickUnit(1);
                         slider.setMinorTickCount(0);
@@ -391,7 +388,6 @@ public class MarketController {
                         slider.setShowTickMarks(true);
                         slider.setShowTickLabels(true);
 
-                        // Remove button
                         Button removeButton = new Button("Remove");
                         removeButton.setOnAction(e -> {
                             int qty = (int) slider.getValue();
@@ -410,7 +406,6 @@ public class MarketController {
                         sliderPane.getChildren().addAll(label, slider, removeButton);
 
                     } else {
-                        // Remove other objects instantly
                         if (parentObj instanceof Supermarket s && obj instanceof Floor f) s.getFloors().remove(f);
                         else if (parentObj instanceof Floor fParent && obj instanceof FloorArea fa) fParent.getFloorAreas().remove(fa);
                         else if (parentObj instanceof FloorArea faParent && obj instanceof Aisle a) faParent.getAisles().remove(a);
@@ -469,7 +464,7 @@ public class MarketController {
 
 
 
-    private Shelf similarityShelf(GoodItem newGood) {
+    public Shelf similarityShelf(Supermarket selectedSupermarket, GoodItem newGood) { //https://mayurdhvajsinhjadeja.medium.com/jaccard-similarity-34e2c15fb524
         Shelf bestShelf = null;
         double bestSimilarity = -1;
 
@@ -479,15 +474,27 @@ public class MarketController {
                     for (Shelf shelf : aisle.getShelves()) {
                         for (GoodItem existingGood : shelf.getGoods()) {
 
-                            double nameDiff = newGood.getName().compareTo(existingGood.getName());
+                            LinkedList<String> newNameTokens = tokenize(newGood.getName());
+                            LinkedList<String> existingNameTokens = tokenize(existingGood.getName());
+                            LinkedList<String> newDescTokens = tokenize(newGood.getDesc());
+                            LinkedList<String> existingDescTokens = tokenize(existingGood.getDesc());
+
+                            double nameSim = jaccardSimilarity(newNameTokens, existingNameTokens);
+                            double descSim = jaccardSimilarity(newDescTokens, existingDescTokens);
+
+
                             double priceDiff = Math.abs(newGood.getPrice() - existingGood.getPrice());
                             double massDiff = Math.abs(newGood.getMass() - existingGood.getMass());
                             double sizeDiff = Math.abs(newGood.getSize() - existingGood.getSize());
 
-                            double similarity = 1.0 / (1.0 + Math.pow(Math.E, -1*(priceDiff + massDiff + sizeDiff + nameDiff))); //Sigmoid function of the total values 1/1+e^-x
 
-                            if (similarity > bestSimilarity) {
-                                bestSimilarity = similarity;
+                            double textSimilarity = 0.7 * nameSim + 0.3 * descSim;
+                            double attributePenalty = priceDiff + massDiff + sizeDiff;
+
+                            double finalScore = textSimilarity * (1.0 / (1.0 + Math.pow(Math.E, attributePenalty)));
+
+                            if (finalScore > bestSimilarity) {
+                                bestSimilarity = finalScore;
                                 bestShelf = shelf;
                             }
                         }
@@ -499,6 +506,58 @@ public class MarketController {
         return bestShelf;
     }
 
+
+    private LinkedList<String> tokenize(String text) {
+        LinkedList<String> tokens = new LinkedList<String>();
+        if (text == null || text.isEmpty()) return tokens;
+
+        text = text.toLowerCase();
+        String word = ""; // accumulate characters here
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (Character.isLetterOrDigit(c)) {
+                word = word + c; // concatenate manually
+            } else if (!word.isEmpty()) {
+                tokens.add(word);
+                word = ""; // reset for next token
+            }
+        }
+
+        if (!word.isEmpty()) tokens.add(word); // add last token
+        return tokens;
+    }
+
+
+    private double jaccardSimilarity(LinkedList<String> list1, LinkedList<String> list2) {
+        if (list1 == null || list2 == null) return 0.0;
+        if (list1.isEmpty() && list2.isEmpty()) return 1.0;
+        if (list1.isEmpty() || list2.isEmpty()) return 0.0;
+
+        int intersection = 0;
+        int union = 0;
+
+        LinkedList<String> list2Copy = list2;
+
+        for (int i = 0; i < list1.size(); i++) {
+            String token1 = list1.get(i);
+            boolean found = false;
+
+            for (int j = 0; j < list2Copy.size(); j++) {
+                if (token1.equals(list2Copy.get(j))) {
+                    intersection++;
+                    list2Copy.remove(list2Copy.get(j));
+                    found = true;
+                    break;
+                }
+            }
+            union++;
+        }
+
+        union += list2Copy.size();
+
+        return (union == 0) ? 0.0 : ((double) intersection / union);
+    }
     @FXML
     private void reports() {
         if (selectedSupermarket == null) {
@@ -634,6 +693,8 @@ public class MarketController {
             label.setStyle("-fx-text-fill: white;");
             searchPane.getChildren().add(label);
         }
+
+
     }
 
 

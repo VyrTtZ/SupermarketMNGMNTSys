@@ -17,7 +17,7 @@
 
       <Pane fx:id="treePane" layoutX="14.0" layoutY="87.0" prefWidth="240.0" style="-fx-background-color: #252526; -fx-background-radius: 10;" AnchorPane.bottomAnchor="180" AnchorPane.leftAnchor="14" AnchorPane.topAnchor="87">
          <children>
-            <VBox fx:id="sliderPane" visible="false" layoutY="447.0" prefHeight="86.0" prefWidth="240.0" spacing="5" style="-fx-background-color: #3a3a3a; -fx-padding: 10; -fx-background-radius: 8;" />
+            <VBox fx:id="sliderPane" layoutY="447.0" prefHeight="86.0" prefWidth="240.0" spacing="5" style="-fx-background-color: #3a3a3a; -fx-padding: 10; -fx-background-radius: 8;" visible="false" />
 
          </children></Pane>
 
@@ -36,11 +36,9 @@
       </VBox>
       <VBox fx:id="reportPane" layoutX="14.0" layoutY="634.0" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: #e1e1e1;" styleClass="-fx-background-radius" />
       <Pane fx:id="stockPane" layoutX="940.0" layoutY="261.0" prefHeight="230.0" prefWidth="226.0" />
-      <Pane fx:id="searchPane" layoutX="946.0" layoutY="14.0" prefHeight="210.0" prefWidth="240.0" style="-fx-background-color: #000000;">
-         <children>
-            <TextField fx:id="searchBar" layoutX="14.0" layoutY="14.0" />
-            <Button fx:id="searchButton" layoutX="174.0" layoutY="14.0" mnemonicParsing="false" onAction="#search" text="Search" />
-         </children></Pane>
+      <Pane fx:id="searchPane" layoutX="946.0" layoutY="43.0" prefHeight="181.0" prefWidth="240.0" style="-fx-background-color: #000000;" />
+      <TextField fx:id="searchBar" layoutX="946.0" layoutY="13.0" />
+      <Button fx:id="searchButton" layoutX="1134.0" layoutY="13.0" mnemonicParsing="false" onAction="#search" text="Search" />
 
    </children>
 </AnchorPane>
