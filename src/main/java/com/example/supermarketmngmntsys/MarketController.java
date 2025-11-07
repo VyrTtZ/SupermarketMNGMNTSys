@@ -26,6 +26,8 @@ public class MarketController {
     @FXML private TextField searchBar;
     @FXML private Pane sliderPane;
 
+
+
     private Supermarket selectedSupermarket;
     private Object currentObject;
     private final Map<TreeItem<String>, Object> treeMap = new HashMap<>();
@@ -42,11 +44,6 @@ public class MarketController {
     // --------------------------------------------------------------------------------
     public void setSupermarket(Supermarket supermarket) {
         this.selectedSupermarket = supermarket;
-        updateUI();
-    }
-
-    @FXML
-    private void updateUIForScene() {
         updateUI();
     }
 
@@ -512,19 +509,19 @@ public class MarketController {
         if (text == null || text.isEmpty()) return tokens;
 
         text = text.toLowerCase();
-        String word = ""; // accumulate characters here
+        String word = "";
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (Character.isLetterOrDigit(c)) {
-                word = word + c; // concatenate manually
+                word = word + c;
             } else if (!word.isEmpty()) {
                 tokens.add(word);
-                word = ""; // reset for next token
+                word = "";
             }
         }
 
-        if (!word.isEmpty()) tokens.add(word); // add last token
+        if (!word.isEmpty()) tokens.add(word);
         return tokens;
     }
 
@@ -558,6 +555,7 @@ public class MarketController {
 
         return (union == 0) ? 0.0 : ((double) intersection / union);
     }
+
     @FXML
     private void reports() {
         if (selectedSupermarket == null) {
