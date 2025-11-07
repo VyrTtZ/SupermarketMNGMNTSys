@@ -2,73 +2,51 @@ package com.example.supermarketmngmntsys;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 public class Launcher extends Application {
 
-    private static Stage primaryStage;
-    private static Supermarket currentSupermarket;
-
-    public static DashboardController dController = new DashboardController();
-    public static MarketController mController = new MarketController();
-
-    private static Scene dashboardScene;
-    private static Scene marketScene;
+    private Stage primaryStage;
+    private Supermarket currentSupermarket;
 
     @Override
-    public void start(Stage stage) {
-        primaryStage = stage;
-        setCurrentLoader(0);
+    public void start(Stage stage) throws Exception {
+        this.primaryStage = stage;
+        showDashboard(); // start here
         primaryStage.setTitle("Supermarket Management System");
         primaryStage.show();
     }
 
-    public static void setCurrentLoader(int loader) {
-        if (primaryStage == null) return;
-
-        try {
-            switch (loader) {
-                case 0 -> {
-                    if (dashboardScene == null) {
-                        FXMLLoader loaderDash = new FXMLLoader(
-                                Launcher.class.getResource("/com/example/supermarketmngmntsys/dashboard-view.fxml"));
-                        Parent root = loaderDash.load();
-                        dashboardScene = new Scene(root);
-                        dController = loaderDash.getController();
-                    }
-                    currentSupermarket = dController.getSelectedSupermarket();
-                    primaryStage.setScene(dashboardScene);
-
-                }
-                case 1 -> {
-                    if (marketScene == null) {
-                        FXMLLoader loaderMarket = new FXMLLoader(
-                                Launcher.class.getResource("/com/example/supermarketmngmntsys/market-view.fxml"));
-                        Parent root = loaderMarket.load();
-                        marketScene = new Scene(root);
-                        mController = loaderMarket.getController();
-                    }
-                    mController.setSupermarket(currentSupermarket);
-                    primaryStage.setScene(marketScene);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    // --- Load and show dashboard scene ---
+    public void showDashboard() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/dashboard-view.fxml"));
+        Scene scene = new Scene(loader.load());
+        DashboardController controller = loader.getController();
+        controller.setLauncher(this); // pass the launcher
+        primaryStage.setScene(scene);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    // --- Load and show market scene ---
+    public void showMarket(Supermarket supermarket) throws Exception {
+        this.currentSupermarket = supermarket; // store the selected one
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/market-view.fxml"));
+        Scene scene = new Scene(loader.load());
+        MarketController controller = loader.getController();
+        controller.setLauncher(this); // give access back to launcher
+        controller.setSupermarket(supermarket); // pass the supermarket
+        primaryStage.setScene(scene);
     }
 
-    public static Supermarket getCurrentSupermarket() {
+    // --- Getter/Setter for supermarket ---
+    public Supermarket getCurrentSupermarket() {
         return currentSupermarket;
     }
 
-    public static void setCurrentSupermarket(Supermarket currentSupermarket) {
-        Launcher.currentSupermarket = currentSupermarket;
+
+
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
