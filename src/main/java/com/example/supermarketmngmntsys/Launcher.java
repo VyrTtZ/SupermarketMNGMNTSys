@@ -18,27 +18,23 @@ public class Launcher extends Application {
         primaryStage.show();
     }
 
-    // --- Load and show dashboard scene ---
     public void showDashboard() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/dashboard-view.fxml"));
         Scene scene = new Scene(loader.load());
         DashboardController controller = loader.getController();
-        controller.setLauncher(this); // pass the launcher
+        controller.setLauncher(this);
         primaryStage.setScene(scene);
     }
 
-    // --- Load and show market scene ---
     public void showMarket(Supermarket supermarket) throws Exception {
-        this.currentSupermarket = supermarket; // store the selected one
+        this.currentSupermarket = supermarket;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/market-view.fxml"));
         Scene scene = new Scene(loader.load());
         MarketController controller = loader.getController();
-        controller.setLauncher(this); // give access back to launcher
-        controller.setSupermarket(supermarket); // pass the supermarket
+        controller.setLauncher(this);
+        controller.setSupermarket(supermarket);
         primaryStage.setScene(scene);
     }
-
-    // --- Getter/Setter for supermarket ---
     public Supermarket getCurrentSupermarket() {
         return currentSupermarket;
     }
