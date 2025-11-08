@@ -13,7 +13,7 @@ public class Launcher extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.primaryStage = stage;
-        showDashboard(); // start here
+        showDashboard();
         primaryStage.setTitle("Supermarket Management System");
         primaryStage.show();
     }

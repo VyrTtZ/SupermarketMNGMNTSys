@@ -78,7 +78,7 @@ public class MarketController {
     }
 
 
-    private Floor numToFloor(int level) {
+    public Floor numToFloor(int level) {
         for (Floor f : selectedSupermarket.getFloors()) {
             if (f.getLevel() == level) return f;
         }
@@ -505,7 +505,7 @@ public class MarketController {
     }
 
 
-    private LinkedList<String> tokenize(String text) {
+    public LinkedList<String> tokenize(String text) {
         LinkedList<String> tokens = new LinkedList<String>();
         if (text == null || text.isEmpty()) return tokens;
 
@@ -527,7 +527,7 @@ public class MarketController {
     }
 
 
-    private double jaccardSimilarity(LinkedList<String> list1, LinkedList<String> list2) {
+    public double jaccardSimilarity(LinkedList<String> list1, LinkedList<String> list2) {
         if (list1 == null || list2 == null) return 0.0;
         if (list1.isEmpty() && list2.isEmpty()) return 1.0;
         if (list1.isEmpty() || list2.isEmpty()) return 0.0;
@@ -585,7 +585,7 @@ public class MarketController {
         reportPane.getChildren().addAll(title, avgLabel, sizeLabel, amountLabel, valueLabel, roomLabel, refrLabel, frozenLabel);
     }
 
-    private void existanceCheckGood(String name, double price, int quantity, double mass, int size, String desc, String img) {
+    public void existanceCheckGood(String name, double price, int quantity, double mass, int size, String desc, String img) {
         GoodItem goodItem = new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img);
         for (Floor floor : selectedSupermarket.getFloors()) {
             for (FloorArea area : floor.getFloorAreas()) {

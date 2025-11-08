@@ -7,16 +7,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
-/**
- * DashboardController handles the supermarket dashboard view.
- * Displays all supermarkets, allows adding/removing them,
- * and lets the user open or save a selected supermarket.
- */
 public class DashboardController {
 
 
     @FXML private GridPane marketsGrid;
-    @FXML private TextField textInDash;
+    @FXML public TextField textInDash;
     private Launcher launcher;
     private LinkedList<Supermarket> supermarkets;
 
@@ -31,7 +26,7 @@ public class DashboardController {
     private void initialize() {}
 
     @FXML
-    private void addMarket() {
+    public void addMarket() {
         String name = textInDash.getText().trim();
         if (name.isEmpty()) {
             showAlert("Please enter a market name before adding.");
@@ -45,7 +40,7 @@ public class DashboardController {
         refreshGrid();
     }
 
-    private void refreshGrid() {
+    public void refreshGrid() {
         if (marketsGrid == null || supermarkets == null) return;
 
         for (var node : marketsGrid.getChildren()) {
