@@ -4,18 +4,16 @@ import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
+//----------------------------------------------------------------------------------------------------------------------
 class MarketControllerTest {
 
     private MarketController controller;
-
+    //----------------------------------------------------------------------------------------------------------------------
     @BeforeEach
     void setUp() {
         controller = new MarketController();
     }
-
-    // -------- tokenize() TESTS --------
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void tokenize_basicSentence() {
         MyLinkedList<String> tokens = controller.tokenize("Redbull bowl ring stone");
@@ -25,7 +23,7 @@ class MarketControllerTest {
         assertEquals("ring", tokens.get(2));
         assertEquals("stone", tokens.get(3));
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void tokenize_withSymbolsAndMixedCase() {
         MyLinkedList<String> tokens = controller.tokenize("Redbull! Bowl, RING-Stone??");
@@ -35,7 +33,7 @@ class MarketControllerTest {
         assertEquals("ring", tokens.get(2));
         assertEquals("stone", tokens.get(3));
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void tokenize_emptyOrNull() {
         MyLinkedList<String> tokens1 = controller.tokenize("");
@@ -43,9 +41,7 @@ class MarketControllerTest {
         assertTrue(tokens1.isEmpty());
         assertTrue(tokens2.isEmpty());
     }
-
-    // -------- jaccardSimilarity() TESTS --------
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_identicalLists() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
@@ -58,7 +54,7 @@ class MarketControllerTest {
         double similarity = controller.jaccardSimilarity(list1, list2);
         assertEquals(1.0, similarity);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_partialOverlap() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
@@ -73,7 +69,7 @@ class MarketControllerTest {
         // intersection = 1 ("stone"), union = 3 ("ring", "stone", "bowl")
         assertEquals(1.0 / 3.0, similarity);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_noOverlap() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
@@ -84,7 +80,7 @@ class MarketControllerTest {
         double similarity = controller.jaccardSimilarity(list1, list2);
         assertEquals(0.0, similarity);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_emptyLists() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
@@ -92,13 +88,13 @@ class MarketControllerTest {
         double similarity = controller.jaccardSimilarity(list1, list2);
         assertEquals(1.0, similarity);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_nullLists() {
         double similarity = controller.jaccardSimilarity(null, null);
         assertEquals(0.0, similarity);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void jaccardSimilarity_oneEmptyList() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
@@ -108,4 +104,5 @@ class MarketControllerTest {
         double similarity = controller.jaccardSimilarity(list1, list2);
         assertEquals(0.0, similarity);
     }
+    //----------------------------------------------------------------------------------------------------------------------
 }

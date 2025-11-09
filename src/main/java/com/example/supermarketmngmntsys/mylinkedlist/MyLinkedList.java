@@ -1,14 +1,13 @@
 package com.example.supermarketmngmntsys.mylinkedlist;
 
 import java.util.Iterator;
-
+//----------------------------------------------------------------------------------------------------------------------
 public class MyLinkedList<T> implements Iterable<T> {
     private Node<T> head; // first node
-
     public MyLinkedList() {
         head = null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void addNode(Node<T> n) {
         if (head == null) {
             head = n;
@@ -18,11 +17,11 @@ public class MyLinkedList<T> implements Iterable<T> {
             current.next = n;
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void add(T value) {
         addNode(new Node<>(value, null));
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public boolean remove(T item) {
         if (head == null) return false;
 
@@ -42,11 +41,11 @@ public class MyLinkedList<T> implements Iterable<T> {
 
         return false;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public boolean isEmpty() {
         return head == null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public int size() {
         int count = 0;
         Node<T> current = head;
@@ -56,7 +55,7 @@ public class MyLinkedList<T> implements Iterable<T> {
         }
         return count;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public T get(int i) {
         Node<T> current = head;
         int j = 0;
@@ -68,21 +67,7 @@ public class MyLinkedList<T> implements Iterable<T> {
 
         return (current != null) ? current.data : null;
     }
-
-    public static <T> void removeAllInstances(MyLinkedList<T> list, T target) {
-        if (list == null || list.isEmpty()) return;
-
-        int i = 0;
-        while (i < list.size()) {
-            T item = list.get(i);
-            if (item == target || (item != null && item.equals(target))) {
-                list.remove(list.get(i)); // assume your LinkedList has a remove(index) method
-            } else {
-                i++;
-            }
-        }
-    }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {
@@ -101,7 +86,7 @@ public class MyLinkedList<T> implements Iterable<T> {
             }
         };
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public boolean contains(T obj) {
             Node node = head;
             while (node != null) {
@@ -113,4 +98,5 @@ public class MyLinkedList<T> implements Iterable<T> {
             return false;
 
     }
+    //----------------------------------------------------------------------------------------------------------------------
 }

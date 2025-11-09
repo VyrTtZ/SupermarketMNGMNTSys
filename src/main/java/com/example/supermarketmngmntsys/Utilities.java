@@ -8,9 +8,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-
+//----------------------------------------------------------------------------------------------------------------------
 public class Utilities {
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static HBox createRow(String labelText, int fieldCount, Runnable addAction) {
         HBox hbox = new HBox(5);
 
@@ -28,7 +28,7 @@ public class Utilities {
 
         return hbox;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static Shelf getParentShelf(Supermarket supermarket, GoodItem target) {
         if (supermarket == null || target == null) return null;
 
@@ -48,7 +48,7 @@ public class Utilities {
 
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static Aisle getParentAisle(Supermarket supermarket, GoodItem target) {
         Shelf shelf = getParentShelf(supermarket, target);
         if (shelf == null) return null;
@@ -64,7 +64,7 @@ public class Utilities {
         }
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static FloorArea getParentFloorArea(Supermarket supermarket, GoodItem target) {
         Aisle aisle = getParentAisle(supermarket, target);
         if (aisle == null) return null;
@@ -78,7 +78,7 @@ public class Utilities {
         }
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static Floor getParentFloor(Supermarket supermarket, GoodItem target) {
         FloorArea area = getParentFloorArea(supermarket, target);
         if (area == null) return null;
@@ -90,7 +90,7 @@ public class Utilities {
         }
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static MyLinkedList<GoodItem> allGoods(Supermarket s){
         MyLinkedList<GoodItem> ret = new MyLinkedList<GoodItem>();
         for (Floor floor : s.getFloors()) {
@@ -106,7 +106,7 @@ public class Utilities {
         }
         return ret;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static String getGoodItemPath(Supermarket supermarket, GoodItem target) {
         if (supermarket == null || target == null) return null;
 
@@ -124,7 +124,7 @@ public class Utilities {
                 " > Shelf " + shelf.getNumber() +
                 " > " + target.getName();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static int countGoods(Supermarket supermarket) {
         if (supermarket == null) return 0;
 
@@ -140,9 +140,7 @@ public class Utilities {
         }
         return count;
     }
-
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static GoodItem checkDupGoodAdd(GoodItem g, MyLinkedList<GoodItem> goodItems) {
         for (GoodItem temp : goodItems) {
             if (temp.getName().equals(g.getName()) &&
@@ -159,7 +157,7 @@ public class Utilities {
         }
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static void drawFloor(Canvas gridCanvas, Floor floor) {
         if (floor == null) return;
 
@@ -212,5 +210,6 @@ public class Utilities {
             faYOffset += faHeight + 10;
         }
     }
+    //----------------------------------------------------------------------------------------------------------------------
 
 }

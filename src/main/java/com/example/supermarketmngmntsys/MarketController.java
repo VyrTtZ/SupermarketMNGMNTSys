@@ -11,7 +11,7 @@ import javafx.scene.layout.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
+//----------------------------------------------------------------------------------------------------------------------
 public class MarketController {
 
     @FXML
@@ -42,19 +42,19 @@ public class MarketController {
     private Object currentObject;
     private final Map<TreeItem<String>, Object> treeMap = new HashMap<>();
     private Launcher app;
-
+    //----------------------------------------------------------------------------------------------------------------------
     @FXML
     private void initialize() {
         editPane.setSpacing(10);
         editPane.setPadding(new Insets(15));
         setupAddRows();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void setSupermarket(Supermarket supermarket) {
         this.selectedSupermarket = supermarket;
         updateUI();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void updateUI() {
         if (selectedSupermarket == null) return;
 
@@ -75,7 +75,7 @@ public class MarketController {
         );
 
         namePane.getChildren().add(nameLabel);
-
+        //-----------------------------------------
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(-selectedSupermarket.getFloors().size(), selectedSupermarket.getFloors().size(), 0, 1);
         floorNum.setValueFactory(valueFactory);
@@ -83,22 +83,21 @@ public class MarketController {
         floorNum.valueProperty().addListener((obs, oldValue, newValue) -> {
             Utilities.drawFloor(gridCanvas, numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
         });
-
+        //-----------------------------------------
         reports();
         buildTree();
         showAllStock();
 
         Utilities.drawFloor(gridCanvas, numToFloor(floorNum.getValue()));
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public Floor numToFloor(int level) {
         for (Floor f : selectedSupermarket.getFloors()) {
             if (f.getLevel() == level) return f;
         }
         return null;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void setupAddRows() {
         addOptionsPane.getChildren().clear();
         addOptionsPane.getChildren().add(createFloorRow());
@@ -108,7 +107,7 @@ public class MarketController {
         addOptionsPane.getChildren().add(createGoodRow());
 
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private HBox createFloorRow() {
         final HBox row = Utilities.createRow("Floor:", 3, null);
 
@@ -117,7 +116,7 @@ public class MarketController {
 
         return row;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleAddFloor(HBox row) {
         try {
             TextField levelField = (TextField) row.getChildren().get(1);
@@ -144,7 +143,7 @@ public class MarketController {
             showAlert("Invalid input");
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private HBox createFloorAreaRow() {
         final HBox row = Utilities.createRow("FloorArea:", 3, null);
 
@@ -153,7 +152,7 @@ public class MarketController {
 
         return row;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleAddFloorArea(HBox row) {
         if (!(currentObject instanceof Floor f)) {
             showAlert("Select a Floor");
@@ -184,7 +183,7 @@ public class MarketController {
             showAlert("Invalid values");
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private HBox createAisleRow() {
         final HBox row = Utilities.createRow("Aisle:", 3, null);
 
@@ -197,7 +196,7 @@ public class MarketController {
 
         return row;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleAddAisle(HBox row) {
         if (!(currentObject instanceof FloorArea fa)) {
             showAlert("Select a FloorArea");
@@ -244,7 +243,7 @@ public class MarketController {
             showAlert("Invalid values");
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private HBox createShelfRow() {
         final HBox row = Utilities.createRow("Shelf:", 1, null);
 
@@ -253,7 +252,7 @@ public class MarketController {
 
         return row;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleAddShelf(HBox row) {
         if (!(currentObject instanceof Aisle a)) {
             showAlert("Select an Aisle");
@@ -265,7 +264,7 @@ public class MarketController {
         numberField.clear();
         buildTree();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private VBox createGoodRow() {
         VBox container = new VBox(5);
         HBox row1 = new HBox(10);
@@ -301,7 +300,7 @@ public class MarketController {
         container.getChildren().addAll(row1, row2);
         return container;
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleAddGood(HBox row1, HBox row2) {
         if (!(currentObject instanceof Shelf s)) {
             showAlert("Select a Shelf");
@@ -346,7 +345,7 @@ public class MarketController {
             showAlert("Invalid values");
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void handleSmartAdd(HBox row1, HBox row2) {
         try {
             TextField nameField = (TextField) row1.getChildren().get(0);
@@ -389,10 +388,7 @@ public class MarketController {
             showAlert("Invalid values");
         }
     }
-
-
-
-    // --------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
     private void buildTree() {
         treeMap.clear();
 
@@ -467,8 +463,7 @@ public class MarketController {
             }
         });
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     private <T> void addToTree(MyLinkedList<T> list, TreeItem<String> parent) {
         if (list == null) return;
 
@@ -491,7 +486,7 @@ public class MarketController {
             else if (item instanceof Shelf s) addToTree(s.getGoods(), node);
         }
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     private void showAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Action Not Allowed");
@@ -499,7 +494,7 @@ public class MarketController {
         alert.setContentText(msg);
         alert.showAndWait();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @FXML
     private void ret() throws Exception {
         if (app != null) {
@@ -509,8 +504,7 @@ public class MarketController {
             gc.clearRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
         }
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public Shelf similarityShelf(Supermarket selectedSupermarket, GoodItem newGood) { //https://mayurdhvajsinhjadeja.medium.com/jaccard-similarity-34e2c15fb524
         Shelf bestShelf = null;
         double bestSimilarity = -1;
@@ -552,8 +546,7 @@ public class MarketController {
 
         return bestShelf;
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public MyLinkedList<String> tokenize(String text) {
         MyLinkedList<String> tokens = new MyLinkedList<String>();
         if (text == null || text.isEmpty()) return tokens;
@@ -574,8 +567,7 @@ public class MarketController {
         if (!word.isEmpty()) tokens.add(word);
         return tokens;
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public double jaccardSimilarity(MyLinkedList<String> list1, MyLinkedList<String> list2) {
         if (list1 == null || list2 == null) return 0.0;
         if (list1.isEmpty() && list2.isEmpty()) return 1.0;
@@ -605,7 +597,7 @@ public class MarketController {
 
         return (union == 0) ? 0.0 : ((double) intersection / union);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @FXML
     private void reports() {
         if (selectedSupermarket == null) {
@@ -618,7 +610,7 @@ public class MarketController {
         double avgProducts = reports.averageProductsPerShelf();
         double totalSize = reports.totalSupermarketSize();
         double totalValue = reports.totalStockValue();
-        MyLinkedList<Double> temps = reports.totalStockByTemperature();
+        MyLinkedList<Double> temps = reports.totalStockWithTemp();
 
         reportPane.getChildren().clear();
 
@@ -652,9 +644,7 @@ public class MarketController {
                 title, avgLabel, sizeLabel, amountLabel, valueLabel, roomLabel, refrLabel, frozenLabel
         );
     }
-
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void showAllStock() {
         stockPane.getChildren().clear();
 
@@ -679,8 +669,7 @@ public class MarketController {
             }
         }
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     @FXML
     private void search() {
         String prompt = searchBar.getText().trim().toLowerCase();
@@ -744,8 +733,7 @@ public class MarketController {
             resultPane.getChildren().add(label);
         }
     }
-
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void setLauncher(Launcher app) {
         this.app = app;
     }

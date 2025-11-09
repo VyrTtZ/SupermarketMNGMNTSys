@@ -4,12 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+//----------------------------------------------------------------------------------------------------------------------
 public class Launcher extends Application {
-
     private Stage primaryStage;
     private Supermarket currentSupermarket;
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Override
     public void start(Stage stage) throws Exception {
         this.primaryStage = stage;
@@ -17,7 +16,7 @@ public class Launcher extends Application {
         primaryStage.setTitle("Supermarket Management System");
         primaryStage.show();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void showDashboard() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/dashboard-view.fxml"));
         Scene scene = new Scene(loader.load());
@@ -25,7 +24,7 @@ public class Launcher extends Application {
         controller.setLauncher(this);
         primaryStage.setScene(scene);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public void showMarket(Supermarket supermarket) throws Exception {
         this.currentSupermarket = supermarket;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/market-view.fxml"));
@@ -35,8 +34,9 @@ public class Launcher extends Application {
         controller.setSupermarket(supermarket);
         primaryStage.setScene(scene);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     public static void main(String[] args) {
         launch(args);
     }
+    //----------------------------------------------------------------------------------------------------------------------
 }

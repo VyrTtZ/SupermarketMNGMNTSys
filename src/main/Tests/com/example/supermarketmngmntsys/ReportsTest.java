@@ -4,12 +4,12 @@ import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
+//----------------------------------------------------------------------------------------------------------------------
 class ReportsTest {
 
     private Supermarket supermarket;
     private Reports reports;
-
+    //----------------------------------------------------------------------------------------------------------------------
     @BeforeEach
     void setUp() {
         supermarket = new Supermarket("TestMart", new MyLinkedList<Floor>());
@@ -58,51 +58,52 @@ class ReportsTest {
 
         reports = new Reports(supermarket);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testAverageProductsPerShelf() {
         double result = reports.averageProductsPerShelf();
         assertEquals(34.0 / 3.0, result);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testTotalSupermarketSize() {
         double result = reports.totalSupermarketSize();
         assertEquals(600.0, result);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testTotalAmountStock() {
         int result = reports.totalAmountStock();
         assertEquals(34, result);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testTotalStockValue() {
         double result = reports.totalStockValue();
         assertEquals(150.0, result);
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testTotalStockByTemperature() {
-        MyLinkedList<Double> result = reports.totalStockByTemperature();
+        MyLinkedList<Double> result = reports.totalStockWithTemp();
         assertEquals(3, result.size());
         assertEquals(40.0, result.get(0));
         assertEquals(110.0, result.get(1));
         assertEquals(0.0, result.get(2));
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testAverageProductsPerShelf_noShelves() {
         Supermarket emptyMarket = new Supermarket("Empty", new MyLinkedList<Floor>());
         Reports emptyReports = new Reports(emptyMarket);
         assertEquals(0.0, emptyReports.averageProductsPerShelf());
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testTotalSupermarketSize_noFloors() {
         Supermarket emptyMarket = new Supermarket("Empty", new MyLinkedList<Floor>());
         Reports emptyReports = new Reports(emptyMarket);
         assertEquals(0.0, emptyReports.totalSupermarketSize());
     }
+    //----------------------------------------------------------------------------------------------------------------------
 }

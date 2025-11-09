@@ -6,42 +6,27 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-
-public class DashboardController {
-
+//----------------------------------------------------------------------------------------------------------------------
+public class DashboardController { //FIELDS
     @FXML private GridPane marketsGrid;
     @FXML public TextField textInDash;
-
     private Launcher launcher;
     private MyLinkedList<Supermarket> supermarkets;
-
-    public void setLauncher(Launcher launcher) {
+    //----------------------------------------------------------------------------------------------------------------------
+    public void setLauncher(Launcher launcher) {// SETS THE LAUNCHER FOR THE CONTROLLER INSTANCE AND SETS THE SUPERMARKET LIST + REFRESHES GRID FOR ANY NEW MARKETS
         this.launcher = launcher;
         this.supermarkets = Parent.getMarkets();
         refreshGrid();
     }
-
+    //----------------------------------------------------------------------------------------------------------------------
     @FXML
-    private void initialize() {
-        textInDash.setStyle("""
-            -fx-background-color: #2d2d2d; 
-            -fx-text-fill: #f0f0f0; 
-            -fx-prompt-text-fill: #888888; 
-            -fx-background-radius: 6; 
-            -fx-padding: 6; 
-            -fx-border-color: #3a3a3a; 
-            -fx-border-radius: 6;
-        """);
-    }
-
-    @FXML
-    public void addMarket() {
+    public void addMarket() { //GETS THE DATA FROM THE FXML FIELD AND UPON BUTTON CLICK ADDS THE MARKET TO THE SUPERMARKETS LINKED LIST
         String name = textInDash.getText().trim();
-        if (name.isEmpty()) {
+        if (name.isEmpty()) {//NOTHING HAPPENS IF THERE IS NO NAME
             showAlert("Please enter a market name before adding.");
             return;
         }
-        for(Supermarket s : supermarkets){
+        for(Supermarket s : supermarkets){ //CHECKS FOR NAME COLLISIONS WITH OTHER EXISTING SUPERMARKETS
             if(s.getName().equals(name)) {
                 showAlert("A Supermarket with this name already exists!");
                 return;
@@ -53,45 +38,50 @@ public class DashboardController {
         textInDash.clear();
         refreshGrid();
     }
-
-    public void refreshGrid() {
+    //----------------------------------------------------------------------------------------------------------------------
+    public void refreshGrid() { //REFRESHES THE SUPERMARKET GRID
         if (marketsGrid == null || supermarkets == null) return;
 
-        for (var node : marketsGrid.getChildren()) {
+        for (Object node : marketsGrid.getChildren()) {//STYLES AND PREPARES THE GRID FOR ADDITION OF MARKETS
             if (node instanceof Pane pane) {
                 pane.getChildren().clear();
                 pane.setOnMousePressed(null);
-                pane.setStyle(basePaneStyle());
+                pane.setStyle("""
+            -fx-background-color: #2f2f31;
+            -fx-background-radius: 10;
+            -fx-border-color: #3a3a3a;
+            -fx-border-radius: 10;
+        """);
             }
         }
 
-        int count = Math.min(supermarkets.size(), marketsGrid.getChildren().size());
-        for (int i = 0; i < count; i++) {
+        int count = Math.min(supermarkets.size(), marketsGrid.getChildren().size());//THE AMOUNT OF SUPERMARKETS OR THE AMOUNT OF AVAILABLE PANES
+        for (int i = 0; i < count; i++) {//GETS ALL THE SUPERMARKETS AND ADDS THEM TO THE PANES IN GRID WITH USE OF POPULATEMARKETS()
             Supermarket market = supermarkets.get(i);
             Pane pane = (Pane) marketsGrid.getChildren().get(i);
             populateMarkets(pane, market);
         }
     }
-
-    private void populateMarkets(Pane pane, Supermarket market) {
-        Label nameLabel = new Label(market.getName());
-        nameLabel.setStyle("""
+    //----------------------------------------------------------------------------------------------------------------------
+    private void populateMarkets(Pane pane, Supermarket market) {//SETS UP THE PANE AND ADDS MARKET TO IT, WITH STYLING
+        Label nameLabel = new Label(market.getName()); //NAME OF MARKET
+        nameLabel.setStyle(""" 
             -fx-text-fill: #e0e0e0;
             -fx-font-family: 'Segoe UI Semibold';
             -fx-font-size: 20px;
             -fx-font-weight: bold;
-        """);
+        """);//STYLING THE LABEL AND SETTING ITS LAYOUT WITHIN THE PANE
         nameLabel.setLayoutX(20);
         nameLabel.setLayoutY(15);
 
-        Canvas gridCanvas = new Canvas(140, 90);
+        Canvas gridCanvas = new Canvas(140, 90); //NEW CANVAS FOR THE DIAGRAM OF GROUND FLOOR OF THE MARKET
         gridCanvas.setLayoutX(20);
         gridCanvas.setLayoutY(55);
-        if (!market.getFloors().isEmpty()) {
+        if (!market.getFloors().isEmpty()) { //NOTHING IS DRAWN IF MARKET IS EQUAL TO NULL
             Utilities.drawFloor(gridCanvas, market.getFloors().get(0));
         }
-
-        Button eraseButton = new Button("Erase");
+        //--------------------------------------------------
+        Button eraseButton = new Button("Erase"); //ADD THE ERASE MARKET BUTTON TO THE PANE
         eraseButton.setLayoutX(10);
         eraseButton.setLayoutY(160);
         eraseButton.setStyle("""
@@ -102,13 +92,13 @@ public class DashboardController {
             -fx-border-color: #ff5c5c;
             -fx-border-radius: 6;
             -fx-cursor: hand;
-        """);
+        """);//SETS THE ERASE BUTTON STYLING
         eraseButton.setOnAction(e -> {
             market.setFloors(new MyLinkedList<Floor>());
             refreshGrid();
         });
-
-        Button saveButton = new Button("Save");
+        //--------------------------------------------------
+        Button saveButton = new Button("Save");//ADD THE SAVE MARKET BUTTON TO THE PANE
         saveButton.setLayoutX(120);
         saveButton.setLayoutY(160);
         saveButton.setStyle("""
@@ -117,82 +107,59 @@ public class DashboardController {
             -fx-font-size: 12px;
             -fx-font-weight: bold;
             -fx-background-radius: 6;
-            -fx-padding: 2 10 2 10;
-            -fx-cursor: hand;
-        """);
-        saveButton.setOnAction(e -> {
+        """);//SETS THE ADD BUTTON STYLING
+        saveButton.setOnAction(e -> {//ADDS ON ACTION SAVING THE MARKET TO XML
             try {
                 Parent.save();
-                showInfo("Saved supermarket data successfully.");
             } catch (Exception ex) {
-                showAlert("Error saving data: " + ex.getMessage());
-                ex.printStackTrace();
+                showAlert("Error");
             }
         });
-
+        //--------------------------------------------------
         pane.setOnMousePressed(e -> {
-            if (e.isPrimaryButtonDown()) {
+            if (e.isPrimaryButtonDown()) { //PRIMARY BUTTON OPENS THE MARKET CONTROLLER + THE SELECTED SUPERMARKET
                 openSupermarket(market);
-            } else if (e.isSecondaryButtonDown()) {
+            } else if (e.isSecondaryButtonDown()) { //SECONDARY BUTTON REMOVES THE MAREKT FROM PARENT SUPERMARKET LIST
                 supermarkets.remove(market);
                 Parent.setMarkets(supermarkets);
                 refreshGrid();
             }
         });
-
-        pane.setOnMouseEntered(e -> pane.setStyle(hoverPaneStyle()));
-        pane.setOnMouseExited(e -> pane.setStyle(basePaneStyle()));
-
-        pane.getChildren().addAll(nameLabel, eraseButton, saveButton, gridCanvas);
-    }
-
-    private void openSupermarket(Supermarket market) {
-        if (launcher == null) {
-            System.err.println("Launcher not set on DashboardController");
-            return;
-        }
-        try {
-            launcher.showMarket(market);
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Failed to open supermarket: " + e.getMessage());
-        }
-    }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Warning");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Info");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private String basePaneStyle() {
-        return """
-            -fx-background-color: #2f2f31;
-            -fx-background-radius: 10;
-            -fx-border-color: #3a3a3a;
-            -fx-border-radius: 10;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
-        """;
-    }
-
-    private String hoverPaneStyle() {
-        return """
+        //--------------------------------------------------
+        pane.setOnMouseEntered(e -> pane.setStyle("""
             -fx-background-color: #353538;
             -fx-background-radius: 10;
             -fx-border-color: #0078d7;
             -fx-border-radius: 10;
-            -fx-cursor: hand;
-        """;
+        """));
+        pane.setOnMouseExited(e -> pane.setStyle("""
+            -fx-background-color: #2f2f31;
+            -fx-background-radius: 10;
+            -fx-border-color: #3a3a3a;
+            -fx-border-radius: 10;
+        """));
+
+        pane.getChildren().addAll(nameLabel, eraseButton, saveButton, gridCanvas); //ADDS ALL THE ELEMENTS TO THE PANE
     }
+    //----------------------------------------------------------------------------------------------------------------------
+    private void openSupermarket(Supermarket market) {//OPENS SUPERMARKET
+        if (launcher == null) { //CHECKS IF THE LAUNCHER HAS BEEN SET
+            System.err.println("Launcher not set");
+            return;
+        }
+        try {//SHOWS MARKET + TRANSFER TO THE MARKET CONTROLLER
+            launcher.showMarket(market);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Failed to open: " + e.getMessage());
+        }
+    }
+    //----------------------------------------------------------------------------------------------------------------------
+    private void showAlert(String message) { //METHOD TO SHOW ALERTS WHEN ERRORS APPEAR DURING OTHER METHODS
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    //----------------------------------------------------------------------------------------------------------------------
 }
