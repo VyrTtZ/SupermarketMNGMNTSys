@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.security.AnyTypePermission;
 public class Parent {
     static MyLinkedList<Supermarket> markets = new MyLinkedList<Supermarket>();
     //----------------------------------------------------------------------------------------------------------------------
-    public Parent(MyLinkedList<Supermarket> m) {
+    public Parent(MyLinkedList<Supermarket> m) { //CONSTRUCTOR
         this.markets = m;
     }
     //----------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ public class Parent {
         markets = m;
     }
     //----------------------------------------------------------------------------------------------------------------------
-    private static XStream configureXStream() {
+    private static XStream configureXStream() { //ATTEMPTED CONFIGURATION FO XSTREAM FOR PERSISTANCE
         XStream xstream = new XStream(new DomDriver());
         xstream.addPermission(AnyTypePermission.ANY);
         xstream.allowTypesByWildcard(new String[] {
@@ -33,7 +33,7 @@ public class Parent {
         return xstream;
     }
     //----------------------------------------------------------------------------------------------------------------------
-    public static void save() throws Exception {
+    public static void save() throws Exception { //ATTEMPTED SAVE METHOD
         XStream xstream = configureXStream();
 
         try (FileWriter writer = new FileWriter("supermarketmngmntSys.xml")) {
@@ -41,7 +41,7 @@ public class Parent {
         }
     }
     //----------------------------------------------------------------------------------------------------------------------
-    public static void load() throws Exception {
+    public static void load() throws Exception { //ATTEMPTED LOAD METHOD
         XStream xstream = configureXStream();
 
         try (FileReader reader = new FileReader("supermarketmngmntSys.xml")) {

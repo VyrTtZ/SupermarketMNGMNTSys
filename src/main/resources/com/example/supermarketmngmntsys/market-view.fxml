@@ -19,7 +19,6 @@
          </children>
       </Pane>
 
-      <!-- Left Navigation / Tree Pane -->
       <TreeView fx:id="treePane" layoutX="30.0" layoutY="110.0" prefHeight="478.0" prefWidth="300.0" style="-fx-background-color: #2f2f31; -fx-control-inner-background: #2f2f31; -fx-text-fill: #f0f0f0; -fx-background-radius: 10; -fx-border-color: #3a3a3a; -fx-border-radius: 10;" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="110.0">
       </TreeView>
 

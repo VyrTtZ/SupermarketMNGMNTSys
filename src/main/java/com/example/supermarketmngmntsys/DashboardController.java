@@ -23,12 +23,12 @@ public class DashboardController { //FIELDS
     public void addMarket() { //GETS THE DATA FROM THE FXML FIELD AND UPON BUTTON CLICK ADDS THE MARKET TO THE SUPERMARKETS LINKED LIST
         String name = textInDash.getText().trim();
         if (name.isEmpty()) {//NOTHING HAPPENS IF THERE IS NO NAME
-            showAlert("Please enter a market name before adding.");
+            Utilities.showAlert("Please enter a market name before adding.");
             return;
         }
         for(Supermarket s : supermarkets){ //CHECKS FOR NAME COLLISIONS WITH OTHER EXISTING SUPERMARKETS
             if(s.getName().equals(name)) {
-                showAlert("A Supermarket with this name already exists!");
+                Utilities.showAlert("A Supermarket with this name already exists!");
                 return;
             }
         }
@@ -112,7 +112,7 @@ public class DashboardController { //FIELDS
             try {
                 Parent.save();
             } catch (Exception ex) {
-                showAlert("Error");
+                Utilities.showAlert("Error");
             }
         });
         //--------------------------------------------------
@@ -144,22 +144,15 @@ public class DashboardController { //FIELDS
     //----------------------------------------------------------------------------------------------------------------------
     private void openSupermarket(Supermarket market) {//OPENS SUPERMARKET
         if (launcher == null) { //CHECKS IF THE LAUNCHER HAS BEEN SET
-            System.err.println("Launcher not set");
             return;
         }
         try {//SHOWS MARKET + TRANSFER TO THE MARKET CONTROLLER
             launcher.showMarket(market);
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Failed to open: " + e.getMessage());
+            Utilities.showAlert("Failed to open: " + e.getMessage());
         }
     }
     //----------------------------------------------------------------------------------------------------------------------
-    private void showAlert(String message) { //METHOD TO SHOW ALERTS WHEN ERRORS APPEAR DURING OTHER METHODS
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-    //----------------------------------------------------------------------------------------------------------------------
+
 }
