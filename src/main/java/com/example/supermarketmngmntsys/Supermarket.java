@@ -1,12 +1,12 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 
 public class Supermarket {
     private String name = "";
-    private LinkedList<Floor> floors;
+    private MyLinkedList<Floor> floors;
 
-    public Supermarket(String name, LinkedList<Floor> floors) {
+    public Supermarket(String name, MyLinkedList<Floor> floors) {
         this.name = name;
         this.floors = floors;
     }
@@ -19,11 +19,11 @@ public class Supermarket {
         this.name = name;
     }
 
-    public LinkedList<Floor> getFloors() {
+    public MyLinkedList<Floor> getFloors() {
         return floors;
     }
 
-    public void setFloors(LinkedList<Floor> floors) {
+    public void setFloors(MyLinkedList<Floor> floors) {
         this.floors = floors;
     }
 }

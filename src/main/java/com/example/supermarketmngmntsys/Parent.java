@@ -1,49 +1,59 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
 public class Parent {
-    static LinkedList<Supermarket> markets = new LinkedList<Supermarket>();
+    static MyLinkedList<Supermarket> markets = new MyLinkedList<Supermarket>();
 
-    public Parent(LinkedList<Supermarket> m) {
+    public Parent(MyLinkedList<Supermarket> m) {
         this.markets = m;
     }
 
-    public static LinkedList<Supermarket> getMarkets() {
+    public static MyLinkedList<Supermarket> getMarkets() {
         return markets;
     }
 
-    public static void setMarkets(LinkedList<Supermarket> m) {
+    public static void setMarkets(MyLinkedList<Supermarket> m) {
         markets = m;
     }
 
-    public static void save() throws Exception {
-
-        System.setProperty("xstream.allowUnsafe", "true");
+    private static XStream configureXStream() {
         XStream xstream = new XStream(new DomDriver());
-        XStream.setupDefaultSecurity(xstream);
-        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class});
-        ObjectOutputStream out = xstream.createObjectOutputStream(new FileWriter("supermarketmngmntSys.xml"));
-        out.writeObject(markets);
-        out.close();
+
+        // Allow all types (use with caution in production)
+        xstream.addPermission(AnyTypePermission.ANY);
+
+        // Allow types by wildcard
+        xstream.allowTypesByWildcard(new String[] {
+                "com.example.supermarketmngmntsys.**"
+        });
+
+        // Ignore unknown elements
+        xstream.ignoreUnknownElements();
+
+        return xstream;
+    }
+
+    public static void save() throws Exception {
+        XStream xstream = configureXStream();
+
+        try (FileWriter writer = new FileWriter("supermarketmngmntSys.xml")) {
+            xstream.toXML(markets, writer);
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public void load() throws Exception {
-        System.setProperty("xstream.allowUnsafe", "true");
-        XStream xstream = new XStream(new DomDriver());
-        XStream.setupDefaultSecurity(xstream);
-        xstream.allowTypes(new Class[]{Parent.class, LinkedList.class, Supermarket.class});
-        ObjectInputStream is = xstream.createObjectInputStream(new FileReader("supermarketmngmntSys.xml"));
-        markets = (LinkedList<Supermarket>) is.readObject();
-        is.close();
+    public static void load() throws Exception {
+        XStream xstream = configureXStream();
+
+        try (FileReader reader = new FileReader("supermarketmngmntSys.xml")) {
+            markets = (MyLinkedList<Supermarket>) xstream.fromXML(reader);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
-import com.example.supermarketmngmntsys.*;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,8 +28,6 @@ public class Utilities {
 
         return hbox;
     }
-
-    /* ======================= PARENT RESOLVERS ======================= */
 
     public static Shelf getParentShelf(Supermarket supermarket, GoodItem target) {
         if (supermarket == null || target == null) return null;
@@ -94,7 +91,21 @@ public class Utilities {
         return null;
     }
 
-    /* ======================= PATH ======================= */
+    public static MyLinkedList<GoodItem> allGoods(Supermarket s){
+        MyLinkedList<GoodItem> ret = new MyLinkedList<GoodItem>();
+        for (Floor floor : s.getFloors()) {
+            for (FloorArea area : floor.getFloorAreas()) {
+                for (Aisle aisle : area.getAisles()) {
+                    for (Shelf shelf : aisle.getShelves()) {
+                        for (GoodItem good : shelf.getGoods()) {
+                            ret.add(good);
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
 
     public static String getGoodItemPath(Supermarket supermarket, GoodItem target) {
         if (supermarket == null || target == null) return null;
@@ -114,8 +125,6 @@ public class Utilities {
                 " > " + target.getName();
     }
 
-    /* ======================= AGGREGATION ======================= */
-
     public static int countGoods(Supermarket supermarket) {
         if (supermarket == null) return 0;
 
@@ -132,7 +141,9 @@ public class Utilities {
         return count;
     }
 
-    public static GoodItem checkDupGoodAdd(GoodItem g, LinkedList<GoodItem> goodItems) {
+
+
+    public static GoodItem checkDupGoodAdd(GoodItem g, MyLinkedList<GoodItem> goodItems) {
         for (GoodItem temp : goodItems) {
             if (temp.getName().equals(g.getName()) &&
                     temp.getPrice() == g.getPrice() &&
@@ -150,7 +161,6 @@ public class Utilities {
     }
 
     public static void drawFloor(Canvas gridCanvas, Floor floor) {
-
         if (floor == null) return;
 
         var gc = gridCanvas.getGraphicsContext2D();
@@ -159,7 +169,7 @@ public class Utilities {
         double canvasWidth = gridCanvas.getWidth();
         double canvasHeight = gridCanvas.getHeight();
 
-        LinkedList<Integer> floorSize = floor.getSize();
+        MyLinkedList<Integer> floorSize = floor.getSize();
         double floorWidth = floorSize.get(0);
         double floorHeight = floorSize.get(1);
 
@@ -170,34 +180,31 @@ public class Utilities {
         double xOffset = (canvasWidth - floorWidth * scale) / 2;
         double yOffset = (canvasHeight - floorHeight * scale) / 2;
 
-        gc.setFill(Color.BLUE);
+        // Floor background in light gray
+        gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(xOffset, yOffset, floorWidth * scale, floorHeight * scale);
-        gc.setStroke(Color.GREEN);
-        gc.strokeText("Floor " + floor.getLevel(), xOffset + 5, yOffset + 15);
 
         double faYOffset = yOffset + 20;
         for (FloorArea fa : floor.getFloorAreas()) {
-            LinkedList<Integer> faSize = fa.getSize();
+            MyLinkedList<Integer> faSize = fa.getSize();
             double faWidth = faSize.get(0) * scale;
             double faHeight = faSize.get(1) * scale;
 
             double faXOffset = xOffset + 10;
-            gc.setFill(Color.DARKGREEN);
+            // FloorArea in medium gray
+            gc.setFill(Color.GRAY);
             gc.fillRect(faXOffset, faYOffset, faWidth, faHeight);
-            gc.setStroke(Color.WHITE);
-            gc.strokeText(fa.getName(), faXOffset + 5, faYOffset + 15);
 
             double aisleYOffset = faYOffset + 10;
             for (Aisle a : fa.getAisles()) {
-                LinkedList<Integer> aisleSize = a.getSize();
+                MyLinkedList<Integer> aisleSize = a.getSize();
                 double aWidth = aisleSize.get(0) * scale;
                 double aHeight = aisleSize.get(1) * scale;
 
                 double aisleXOffset = faXOffset + 5;
-                gc.setFill(Color.DARKRED);
+                // Aisle in dark gray
+                gc.setFill(Color.DARKGRAY);
                 gc.fillRect(aisleXOffset, aisleYOffset, aWidth, aHeight);
-                gc.setStroke(Color.WHITE);
-                gc.strokeText(a.getName(), aisleXOffset + 5, aisleYOffset + 15);
 
                 aisleYOffset += aHeight + 5;
             }

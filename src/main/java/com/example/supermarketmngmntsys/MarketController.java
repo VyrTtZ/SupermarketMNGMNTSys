@@ -1,6 +1,6 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
@@ -29,13 +29,15 @@ public class MarketController {
     @FXML
     private VBox reportPane;
     @FXML
-    private Pane stockPane;
+    private VBox stockPane;
     @FXML
     private Pane searchPane;
     @FXML
     private TextField searchBar;
     @FXML
-    private Pane sliderPane;
+    private VBox sliderPane;
+    @FXML
+    private VBox resultPane;
     private Supermarket selectedSupermarket;
     private Object currentObject;
     private final Map<TreeItem<String>, Object> treeMap = new HashMap<>();
@@ -53,22 +55,34 @@ public class MarketController {
         updateUI();
     }
 
-    public void initData(Launcher app, Supermarket supermarket) {
-        this.app = app;
-        this.selectedSupermarket = supermarket;
-        updateUI();
-    }
-
     private void updateUI() {
         if (selectedSupermarket == null) return;
 
         namePane.getChildren().clear();
-        namePane.getChildren().add(new Label(selectedSupermarket.getName()));
+        Label nameLabel = new Label(selectedSupermarket.getName());
+        nameLabel.setStyle("""
+        -fx-alignment: center;
+        -fx-text-fill: #FFFFFF;
+        -fx-font-family: 'Segoe UI Semibold';
+        -fx-font-size: 30px;
+        -fx-font-weight: bold;
+        """);
+        nameLabel.layoutXProperty().bind(
+                namePane.widthProperty().subtract(nameLabel.widthProperty()).divide(2)
+        );
+        nameLabel.layoutYProperty().bind(
+                namePane.heightProperty().subtract(nameLabel.heightProperty()).divide(2)
+        );
+
+        namePane.getChildren().add(nameLabel);
 
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(-selectedSupermarket.getFloors().size(), selectedSupermarket.getFloors().size(), 0, 1);
         floorNum.setValueFactory(valueFactory);
         floorNum.setEditable(true);
+        floorNum.valueProperty().addListener((obs, oldValue, newValue) -> {
+            Utilities.drawFloor(gridCanvas, numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
+        });
 
         reports();
         buildTree();
@@ -114,11 +128,11 @@ public class MarketController {
             int x = Integer.parseInt(xField.getText().trim());
             int y = Integer.parseInt(yField.getText().trim());
 
-            LinkedList<Integer> size = new LinkedList<Integer>();
+            MyLinkedList<Integer> size = new MyLinkedList<Integer>();
             size.add(x);
             size.add(y);
 
-            selectedSupermarket.getFloors().add(new Floor(level, new LinkedList<FloorArea>(), size));
+            selectedSupermarket.getFloors().add(new Floor(level, new MyLinkedList<FloorArea>(), size));
 
             levelField.clear();
             xField.clear();
@@ -154,18 +168,18 @@ public class MarketController {
             int x = Integer.parseInt(xField.getText().trim());
             int y = Integer.parseInt(yField.getText().trim());
 
-            LinkedList<Integer> size = new LinkedList<Integer>();
+            MyLinkedList<Integer> size = new MyLinkedList<Integer>();
             size.add(x);
             size.add(y);
 
-            f.getFloorAreas().add(new FloorArea(name, new LinkedList<Aisle>(), size));
+            f.getFloorAreas().add(new FloorArea(name, new MyLinkedList<Aisle>(), size));
 
             nameField.clear();
             xField.clear();
             yField.clear();
 
             Utilities.drawFloor(gridCanvas, numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
-            buildTree();
+            updateUI();
         } catch (NumberFormatException ex) {
             showAlert("Invalid values");
         }
@@ -199,7 +213,7 @@ public class MarketController {
             int x = Integer.parseInt(xField.getText().trim());
             int y = Integer.parseInt(yField.getText().trim());
 
-            LinkedList<Integer> size = new LinkedList<Integer>();
+            MyLinkedList<Integer> size = new MyLinkedList<Integer>();
             size.add(x);
             size.add(y);
 
@@ -210,7 +224,7 @@ public class MarketController {
                 default -> 1;
             };
 
-            Aisle tempAisle = new Aisle(name, new LinkedList<Shelf>(), size, temperatureFinal);
+            Aisle tempAisle = new Aisle(name, new MyLinkedList<Shelf>(), size, temperatureFinal);
             for (Floor f : selectedSupermarket.getFloors()) {
                 for (FloorArea floorArea : f.getFloorAreas()) {
                     for (Aisle aisle : floorArea.getAisles()) {
@@ -225,7 +239,7 @@ public class MarketController {
             yField.clear();
 
             Utilities.drawFloor(gridCanvas, numToFloor(Integer.parseInt(floorNum.getValue().toString().trim())));
-            buildTree();
+            updateUI();
         } catch (NumberFormatException ex) {
             showAlert("Invalid values");
         }
@@ -245,102 +259,137 @@ public class MarketController {
             showAlert("Select an Aisle");
             return;
         }
+
         TextField numberField = (TextField) row.getChildren().get(1);
-        a.getShelves().add(new Shelf(Integer.parseInt(numberField.getText().trim()), new LinkedList<GoodItem>(), new LinkedList<Integer>()));
+        a.getShelves().add(new Shelf(Integer.parseInt(numberField.getText().trim()), new MyLinkedList<GoodItem>(), new MyLinkedList<Integer>()));
         numberField.clear();
         buildTree();
     }
 
-    private HBox createGoodRow() {
-        final HBox row = Utilities.createRow("Good:", 7, null);
+    private VBox createGoodRow() {
+        VBox container = new VBox(5);
+        HBox row1 = new HBox(10);
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+        TextField quantityField = new TextField();
+        quantityField.setPromptText("Amount");
+        TextField priceField = new TextField();
+        priceField.setPromptText("Price");
+        TextField massField = new TextField();
+        massField.setPromptText("Mass");
+        TextField sizeField = new TextField();
+        sizeField.setPromptText("Size");
 
+        row1.getChildren().addAll(nameField, quantityField, priceField, massField, sizeField);
+
+        // --- Row 2: Description, Image URL, Buttons ---
+        HBox row2 = new HBox(10);
+        TextField descField = new TextField();
+        descField.setPromptText("Description");
+        TextField imgField = new TextField();
+        imgField.setPromptText("Image URL");
+
+        Button addButton = new Button("Add");
         Button smartAddButton = new Button("Smart Add");
-        row.getChildren().add(smartAddButton);
 
-        Button addButton = (Button) row.getChildren().get(row.getChildren().size() - 2);
-        addButton.setOnAction(e ->
-        {
-            handleAddGood(row);
-            reports();
-        });
-        smartAddButton.setOnAction(e ->
-        {
-            handleSmartAddGood(row);
-            reports();
-        });
+        row2.getChildren().addAll(descField, imgField, addButton, smartAddButton);
 
-        return row;
+        // --- Handlers ---
+        addButton.setOnAction(e -> handleAddGood(row1, row2));
+        smartAddButton.setOnAction(e -> handleSmartAdd(row1, row2));
+
+        container.getChildren().addAll(row1, row2);
+        return container;
     }
 
-    private void handleAddGood(HBox row) {
+    private void handleAddGood(HBox row1, HBox row2) {
         if (!(currentObject instanceof Shelf s)) {
             showAlert("Select a Shelf");
             return;
         }
         try {
-            TextField nameField = (TextField) row.getChildren().get(1);
-            TextField priceField = (TextField) row.getChildren().get(2);
-            TextField quantityField = (TextField) row.getChildren().get(3);
-            TextField massField = (TextField) row.getChildren().get(4);
-            TextField sizeField = (TextField) row.getChildren().get(5);
-            TextField descField = (TextField) row.getChildren().get(6);
-            TextField imgField = (TextField) row.getChildren().get(7);
+            TextField nameField = (TextField) row1.getChildren().get(0);
+            TextField quantityField = (TextField) row1.getChildren().get(1);
+            TextField priceField = (TextField) row1.getChildren().get(2);
+            TextField massField = (TextField) row1.getChildren().get(3);
+            TextField sizeField = (TextField) row1.getChildren().get(4);
+
+            TextField descField = (TextField) row2.getChildren().get(0);
+            TextField imgField = (TextField) row2.getChildren().get(1);
 
             String name = nameField.getText().trim();
-            String desc = descField.getText().trim();
-            String img = imgField.getText().trim();
-            double price = Double.parseDouble(priceField.getText().trim());
             int quantity = Integer.parseInt(quantityField.getText().trim());
+            double price = Double.parseDouble(priceField.getText().trim());
             double mass = Double.parseDouble(massField.getText().trim());
             int size = Integer.parseInt(sizeField.getText().trim());
-            existanceCheckGood(name, price, quantity, mass, size, desc, img);
+            String desc = descField.getText().trim();
+            String img = imgField.getText().trim();
+
+            if(Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
+                s.getGoods().add(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            else{
+                Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
+                        Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity
+                );
+            }
 
             nameField.clear();
-            priceField.clear();
             quantityField.clear();
+            priceField.clear();
             massField.clear();
             sizeField.clear();
+            descField.clear();
+            imgField.clear();
 
-            buildTree();
+            updateUI();
         } catch (NumberFormatException ex) {
             showAlert("Invalid values");
         }
     }
 
-    private void handleSmartAddGood(HBox row) {
+    private void handleSmartAdd(HBox row1, HBox row2) {
         try {
-            TextField nameField = (TextField) row.getChildren().get(1);
-            TextField priceField = (TextField) row.getChildren().get(2);
-            TextField quantityField = (TextField) row.getChildren().get(3);
-            TextField massField = (TextField) row.getChildren().get(4);
-            TextField sizeField = (TextField) row.getChildren().get(5);
-            TextField descField = (TextField) row.getChildren().get(6);
-            TextField imgField = (TextField) row.getChildren().get(7);
+            TextField nameField = (TextField) row1.getChildren().get(0);
+            TextField quantityField = (TextField) row1.getChildren().get(1);
+            TextField priceField = (TextField) row1.getChildren().get(2);
+            TextField massField = (TextField) row1.getChildren().get(3);
+            TextField sizeField = (TextField) row1.getChildren().get(4);
+
+            TextField descField = (TextField) row2.getChildren().get(0);
+            TextField imgField = (TextField) row2.getChildren().get(1);
 
             String name = nameField.getText().trim();
-            String desc = descField.getText().trim();
-            String img = imgField.getText().trim();
-            double price = Double.parseDouble(priceField.getText().trim());
             int quantity = Integer.parseInt(quantityField.getText().trim());
+            double price = Double.parseDouble(priceField.getText().trim());
             double mass = Double.parseDouble(massField.getText().trim());
             int size = Integer.parseInt(sizeField.getText().trim());
+            String desc = descField.getText().trim();
+            String img = imgField.getText().trim();
 
-            existanceCheckGood(name, price, quantity, mass, size, desc, img);
+            Shelf target = similarityShelf(selectedSupermarket, new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            if(Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
+                target.getGoods().add(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            else{
+                Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
+                        Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity
+                );
+            }
 
-            Shelf target = similarityShelf(selectedSupermarket, new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img));
-            target.getGoods().add(new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img));
 
             nameField.clear();
-            priceField.clear();
             quantityField.clear();
+            priceField.clear();
             massField.clear();
             sizeField.clear();
+            descField.clear();
+            imgField.clear();
 
-            buildTree();
+            updateUI();
         } catch (NumberFormatException ex) {
             showAlert("Invalid values");
         }
     }
+
 
 
     // --------------------------------------------------------------------------------
@@ -381,7 +430,7 @@ public class MarketController {
                         label.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
 
                         Slider slider = new Slider(1, good.getStock(), 1);
-                        slider.setMajorTickUnit(1);
+                        slider.setMajorTickUnit((int)Math.pow(good.getStock(), 0.5));
                         slider.setMinorTickCount(0);
                         slider.setSnapToTicks(true);
                         slider.setShowTickMarks(true);
@@ -389,17 +438,18 @@ public class MarketController {
 
                         Button removeButton = new Button("Remove");
                         removeButton.setOnAction(e -> {
-                            int qty = (int) slider.getValue();
-                            if (qty >= good.getStock()) {
+                            int amount = (int) slider.getValue();
+                            if (amount >= good.getStock()) {
                                 if (parentObj instanceof Shelf sParent) sParent.getGoods().remove(good);
                                 parentItem.getChildren().remove(selectedItem);
                                 treeMap.remove(selectedItem);
                             } else {
-                                good.setStock(good.getStock() - qty);
-                                selectedItem.setValue("Good: " + good.getName() + " (" + good.getStock() + ")");
+                                good.setStock(good.getStock() - amount);
+                                selectedItem.setValue("Good: " + good.getName());
                             }
                             sliderPane.getChildren().clear();
                             sliderPane.setVisible(false);
+                            updateUI();
                         });
 
                         sliderPane.getChildren().addAll(label, slider, removeButton);
@@ -419,7 +469,7 @@ public class MarketController {
     }
 
 
-    private <T> void addToTree(LinkedList<T> list, TreeItem<String> parent) {
+    private <T> void addToTree(MyLinkedList<T> list, TreeItem<String> parent) {
         if (list == null) return;
 
         for (T item : list) {
@@ -455,7 +505,6 @@ public class MarketController {
         if (app != null) {
             app.showDashboard();
         } else {
-            // fallback, still clears canvas
             GraphicsContext gc = gridCanvas.getGraphicsContext2D();
             gc.clearRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
         }
@@ -472,10 +521,10 @@ public class MarketController {
                     for (Shelf shelf : aisle.getShelves()) {
                         for (GoodItem existingGood : shelf.getGoods()) {
 
-                            LinkedList<String> newNameTokens = tokenize(newGood.getName());
-                            LinkedList<String> existingNameTokens = tokenize(existingGood.getName());
-                            LinkedList<String> newDescTokens = tokenize(newGood.getDesc());
-                            LinkedList<String> existingDescTokens = tokenize(existingGood.getDesc());
+                            MyLinkedList<String> newNameTokens = tokenize(newGood.getName());
+                            MyLinkedList<String> existingNameTokens = tokenize(existingGood.getName());
+                            MyLinkedList<String> newDescTokens = tokenize(newGood.getDesc());
+                            MyLinkedList<String> existingDescTokens = tokenize(existingGood.getDesc());
 
                             double nameSim = jaccardSimilarity(newNameTokens, existingNameTokens);
                             double descSim = jaccardSimilarity(newDescTokens, existingDescTokens);
@@ -505,8 +554,8 @@ public class MarketController {
     }
 
 
-    public LinkedList<String> tokenize(String text) {
-        LinkedList<String> tokens = new LinkedList<String>();
+    public MyLinkedList<String> tokenize(String text) {
+        MyLinkedList<String> tokens = new MyLinkedList<String>();
         if (text == null || text.isEmpty()) return tokens;
 
         text = text.toLowerCase();
@@ -527,7 +576,7 @@ public class MarketController {
     }
 
 
-    public double jaccardSimilarity(LinkedList<String> list1, LinkedList<String> list2) {
+    public double jaccardSimilarity(MyLinkedList<String> list1, MyLinkedList<String> list2) {
         if (list1 == null || list2 == null) return 0.0;
         if (list1.isEmpty() && list2.isEmpty()) return 1.0;
         if (list1.isEmpty() || list2.isEmpty()) return 0.0;
@@ -535,7 +584,7 @@ public class MarketController {
         int intersection = 0;
         int union = 0;
 
-        LinkedList<String> list2Copy = list2;
+        MyLinkedList<String> list2Copy = list2;
 
         for (int i = 0; i < list1.size(); i++) {
             String token1 = list1.get(i);
@@ -569,41 +618,42 @@ public class MarketController {
         double avgProducts = reports.averageProductsPerShelf();
         double totalSize = reports.totalSupermarketSize();
         double totalValue = reports.totalStockValue();
-        LinkedList<Double> temps = reports.totalStockByTemperature();
+        MyLinkedList<Double> temps = reports.totalStockByTemperature();
 
         reportPane.getChildren().clear();
 
+        // Main title
         Label title = new Label("Reports");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+
+        // Individual stats
         Label avgLabel = new Label("Average products per shelf: " + avgProducts);
+        avgLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label sizeLabel = new Label("Total supermarket size: " + totalSize);
+        sizeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label amountLabel = new Label("Total number of stock: " + reports.totalAmountStock());
+        amountLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label valueLabel = new Label("Total stock value: " + totalValue);
+        valueLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label roomLabel = new Label("Room temperature stock: " + temps.get(0));
+        roomLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label refrLabel = new Label("Refrigerated stock: " + temps.get(1));
+        refrLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
         Label frozenLabel = new Label("Frozen stock: " + temps.get(2));
+        frozenLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
 
-        reportPane.getChildren().addAll(title, avgLabel, sizeLabel, amountLabel, valueLabel, roomLabel, refrLabel, frozenLabel);
+        reportPane.getChildren().addAll(
+                title, avgLabel, sizeLabel, amountLabel, valueLabel, roomLabel, refrLabel, frozenLabel
+        );
     }
 
-    public void existanceCheckGood(String name, double price, int quantity, double mass, int size, String desc, String img) {
-        GoodItem goodItem = new GoodItem(name, new LinkedList<Shelf>(), price, quantity, mass, size, desc, img);
-        for (Floor floor : selectedSupermarket.getFloors()) {
-            for (FloorArea area : floor.getFloorAreas()) {
-                for (Aisle aisle : area.getAisles()) {
-                    for (Shelf shelf : aisle.getShelves()) {
-                        GoodItem duplicate = Utilities.checkDupGoodAdd(goodItem, shelf.getGoods());
 
-                        if (duplicate != null) {
-                            duplicate.setStock(duplicate.getStock() + goodItem.getStock());
-                            return;
-                        } else {
-                            shelf.getGoods().add(goodItem);
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     public void showAllStock() {
         stockPane.getChildren().clear();
@@ -630,17 +680,19 @@ public class MarketController {
         }
     }
 
+
     @FXML
     private void search() {
         String prompt = searchBar.getText().trim().toLowerCase();
-        searchPane.getChildren().clear();
-
+        resultPane.getChildren().clear();
         if (prompt.isEmpty()) {
-            searchPane.getChildren().add(new Label("Enter something to search."));
+            Label empty = new Label("Enter something to search.");
+            empty.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
+            searchPane.getChildren().add(empty);
             return;
         }
 
-        LinkedList<String> results = new LinkedList<String>();
+        MyLinkedList<String> results = new MyLinkedList<String>();
 
         for (Floor f : selectedSupermarket.getFloors()) {
             String floorName = "Floor " + f.getLevel();
@@ -650,18 +702,18 @@ public class MarketController {
 
             for (FloorArea fa : f.getFloorAreas()) {
                 if (fa.getName().toLowerCase().contains(prompt)) {
-                    results.add("FloorArea: " + fa.getName() + " (Floor " + f.getLevel() + ")");
+                    results.add("FloorArea: " + fa.getName() + " -> Floor: " + f.getLevel());
                 }
 
                 for (Aisle a : fa.getAisles()) {
                     if (a.getName().toLowerCase().contains(prompt)) {
-                        results.add("Aisle: " + a.getName() + " (Floor " + f.getLevel() + ", Area: " + fa.getName() + ")");
+                        results.add("Aisle: " + a.getName() + " -> Floor: " + f.getLevel() + ", -> Floor Area: " + fa.getName());
                     }
 
                     for (Shelf s : a.getShelves()) {
-                        String shelfLabel = "Shelf " + s.getNumber();
+                        String shelfLabel = "Shelf: " + s.getNumber();
                         if (shelfLabel.toLowerCase().contains(prompt)) {
-                            results.add(shelfLabel + " (Aisle: " + a.getName() + ")");
+                            results.add(shelfLabel + " -> Aisle: " + a.getName());
                         }
 
                         for (GoodItem g : s.getGoods()) {
@@ -677,22 +729,22 @@ public class MarketController {
             }
         }
 
-        if (results.size() == 0) {
+        if (results.isEmpty()) {
             Label none = new Label("No results found for \"" + prompt + "\".");
-            none.setStyle("-fx-text-fill: gray;");
-            searchPane.getChildren().add(none);
+            none.setStyle("-fx-text-fill: gray; -fx-font-size: 12px;");
+            resultPane.getChildren().add(none);
             return;
         }
 
         int limit = Math.min(10, results.size());
         for (int i = 0; i < limit; i++) {
             Label label = new Label(results.get(i));
-            label.setStyle("-fx-text-fill: white;");
-            searchPane.getChildren().add(label);
+            label.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+            label.setPadding(new Insets(3, 0, 3, 5));
+            resultPane.getChildren().add(label);
         }
-
-
     }
+
 
     public void setLauncher(Launcher app) {
         this.app = app;

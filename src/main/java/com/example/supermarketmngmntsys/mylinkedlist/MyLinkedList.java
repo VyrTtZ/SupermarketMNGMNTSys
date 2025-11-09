@@ -1,11 +1,11 @@
-package LinkedList;
+package com.example.supermarketmngmntsys.mylinkedlist;
 
 import java.util.Iterator;
 
-public class LinkedList<T> implements Iterable<T> {
+public class MyLinkedList<T> implements Iterable<T> {
     private Node<T> head; // first node
 
-    public LinkedList() {
+    public MyLinkedList() {
         head = null;
     }
 
@@ -69,7 +69,7 @@ public class LinkedList<T> implements Iterable<T> {
         return (current != null) ? current.data : null;
     }
 
-    public static <T> void removeAllInstances(LinkedList<T> list, T target) {
+    public static <T> void removeAllInstances(MyLinkedList<T> list, T target) {
         if (list == null || list.isEmpty()) return;
 
         int i = 0;

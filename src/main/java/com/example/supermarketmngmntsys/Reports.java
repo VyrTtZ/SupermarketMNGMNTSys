@@ -1,6 +1,6 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 
 public class Reports {
 
@@ -34,7 +34,7 @@ public class Reports {
         double total = 0;
 
         for (Floor f : supermarket.getFloors()) {
-            LinkedList<Integer> size = f.getSize();
+            MyLinkedList<Integer> size = f.getSize();
             if (size.size() >= 2) {
                 total += size.get(0) * size.get(1);
             }
@@ -77,7 +77,7 @@ public class Reports {
         return total;
     }
 
-    public LinkedList<Double> totalStockByTemperature() {
+    public MyLinkedList<Double> totalStockByTemperature() {
         double frozen = 0;
         double refrigerated = 0;
         double room = 0;
@@ -99,7 +99,7 @@ public class Reports {
             }
         }
 
-        LinkedList<Double> result = new LinkedList<Double>();
+        MyLinkedList<Double> result = new MyLinkedList<Double>();
         result.add(room);
         result.add(refrigerated);
         result.add(frozen);

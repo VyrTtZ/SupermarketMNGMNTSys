@@ -4,7 +4,12 @@ module com.example.supermarketmngmntsys {
     requires java.desktop;
     requires xstream;
 
+    // Open all your main package for FXML and XStream
+    opens com.example.supermarketmngmntsys to javafx.fxml, com.thoughtworks.xstream;
 
-    opens com.example.supermarketmngmntsys to javafx.fxml;
-    exports com.example.supermarketmngmntsys;
+    // Open the LinkedList package (use top-level if that is what it is)
+    opens com.example.supermarketmngmntsys.mylinkedlist to com.thoughtworks.xstream;  // <-- key change
+
+    // Export main package for JavaFX application instantiation
+    exports com.example.supermarketmngmntsys to javafx.graphics;
 }

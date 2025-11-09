@@ -1,15 +1,15 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 
 public class Aisle {
 
     private String name;
-    private LinkedList<Shelf> shelves;
-    private LinkedList<Integer> size;
+    private MyLinkedList<Shelf> shelves;
+    private MyLinkedList<Integer> size;
     private int refrigerated;
 
-    public Aisle(String name, LinkedList<Shelf> shelves, LinkedList<Integer> size, int refrigerated) {
+    public Aisle(String name, MyLinkedList<Shelf> shelves, MyLinkedList<Integer> size, int refrigerated) {
         this.name = name;
         this.shelves = shelves;
         this.size = size;
@@ -24,19 +24,19 @@ public class Aisle {
         this.name = name;
     }
 
-    public LinkedList<Shelf> getShelves() {
+    public MyLinkedList<Shelf> getShelves() {
         return shelves;
     }
 
-    public void setShelves(LinkedList<Shelf> shelves) {
+    public void setShelves(MyLinkedList<Shelf> shelves) {
         this.shelves = shelves;
     }
 
-    public LinkedList<Integer> getSize() {
+    public MyLinkedList<Integer> getSize() {
         return size;
     }
 
-    public void setSize(LinkedList<Integer> size) {
+    public void setSize(MyLinkedList<Integer> size) {
         this.size = size;
     }
 

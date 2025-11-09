@@ -35,12 +35,6 @@ public class Launcher extends Application {
         controller.setSupermarket(supermarket);
         primaryStage.setScene(scene);
     }
-    public Supermarket getCurrentSupermarket() {
-        return currentSupermarket;
-    }
-
-
-
 
     public static void main(String[] args) {
         launch(args);

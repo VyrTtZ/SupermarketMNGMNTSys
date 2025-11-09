@@ -1,6 +1,6 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -9,12 +9,11 @@ import javafx.scene.layout.Pane;
 
 public class DashboardController {
 
-
     @FXML private GridPane marketsGrid;
     @FXML public TextField textInDash;
-    private Launcher launcher;
-    private LinkedList<Supermarket> supermarkets;
 
+    private Launcher launcher;
+    private MyLinkedList<Supermarket> supermarkets;
 
     public void setLauncher(Launcher launcher) {
         this.launcher = launcher;
@@ -23,7 +22,17 @@ public class DashboardController {
     }
 
     @FXML
-    private void initialize() {}
+    private void initialize() {
+        textInDash.setStyle("""
+            -fx-background-color: #2d2d2d; 
+            -fx-text-fill: #f0f0f0; 
+            -fx-prompt-text-fill: #888888; 
+            -fx-background-radius: 6; 
+            -fx-padding: 6; 
+            -fx-border-color: #3a3a3a; 
+            -fx-border-radius: 6;
+        """);
+    }
 
     @FXML
     public void addMarket() {
@@ -32,8 +41,13 @@ public class DashboardController {
             showAlert("Please enter a market name before adding.");
             return;
         }
-
-        Supermarket newMarket = new Supermarket(name, new LinkedList<Floor>());
+        for(Supermarket s : supermarkets){
+            if(s.getName().equals(name)) {
+                showAlert("A Supermarket with this name already exists!");
+                return;
+            }
+        }
+        Supermarket newMarket = new Supermarket(name, new MyLinkedList<Floor>());
         supermarkets.add(newMarket);
         Parent.setMarkets(supermarkets);
         textInDash.clear();
@@ -55,60 +69,57 @@ public class DashboardController {
         for (int i = 0; i < count; i++) {
             Supermarket market = supermarkets.get(i);
             Pane pane = (Pane) marketsGrid.getChildren().get(i);
-            populateMarketPane(pane, market);
+            populateMarkets(pane, market);
         }
     }
 
-    private void populateMarketPane(Pane pane, Supermarket market) {
+    private void populateMarkets(Pane pane, Supermarket market) {
         Label nameLabel = new Label(market.getName());
         nameLabel.setStyle("""
-                -fx-text-fill: #e0e0e0;
-                -fx-font-family: 'Segoe UI Semibold';
-                -fx-font-size: 20px;
-                -fx-font-weight: bold;
-                """);
+            -fx-text-fill: #e0e0e0;
+            -fx-font-family: 'Segoe UI Semibold';
+            -fx-font-size: 20px;
+            -fx-font-weight: bold;
+        """);
         nameLabel.setLayoutX(20);
         nameLabel.setLayoutY(15);
 
-        Canvas gridCanvas = new Canvas(160, 100);
+        Canvas gridCanvas = new Canvas(140, 90);
         gridCanvas.setLayoutX(20);
         gridCanvas.setLayoutY(55);
-        gridCanvas.setStyle("-fx-background-color: #1e1e1e; -fx-background-radius: 6;");
         if (!market.getFloors().isEmpty()) {
             Utilities.drawFloor(gridCanvas, market.getFloors().get(0));
         }
 
         Button eraseButton = new Button("Erase");
-        eraseButton.setLayoutX(200);
-        eraseButton.setLayoutY(20);
+        eraseButton.setLayoutX(10);
+        eraseButton.setLayoutY(160);
         eraseButton.setStyle("""
-                -fx-background-color: transparent;
-                -fx-text-fill: #ff5c5c;
-                -fx-font-size: 12px;
-                -fx-font-weight: bold;
-                -fx-border-color: #ff5c5c;
-                -fx-border-radius: 6;
-                -fx-padding: 2 8 2 8;
-                -fx-cursor: hand;
-                """);
+            -fx-background-color: transparent;
+            -fx-text-fill: #ff5c5c;
+            -fx-font-size: 12px;
+            -fx-font-weight: bold;
+            -fx-border-color: #ff5c5c;
+            -fx-border-radius: 6;
+            -fx-cursor: hand;
+        """);
         eraseButton.setOnAction(e -> {
-            supermarkets.remove(market);
-            Parent.setMarkets(supermarkets);
+            market.setFloors(new MyLinkedList<Floor>());
             refreshGrid();
         });
 
         Button saveButton = new Button("Save");
-        saveButton.setLayoutX(265);
-        saveButton.setLayoutY(20);
+        saveButton.setLayoutX(120);
+        saveButton.setLayoutY(160);
         saveButton.setStyle("""
-                -fx-background-color: #0078d7;
-                -fx-text-fill: white;
-                -fx-font-size: 12px;
-                -fx-font-weight: bold;
-                -fx-background-radius: 6;
-                -fx-padding: 2 10 2 10;
-                -fx-cursor: hand;
-                """);
+            -fx-background-color: #0078d7;
+            -fx-text-fill: white;
+            -fx-font-size: 12px;
+            -fx-font-weight: bold;
+            -fx-background-radius: 6;
+            -fx-padding: 2 10 2 10;
+            -fx-cursor: hand;
+        """);
         saveButton.setOnAction(e -> {
             try {
                 Parent.save();
@@ -166,22 +177,22 @@ public class DashboardController {
 
     private String basePaneStyle() {
         return """
-                -fx-background-color: #2f2f31;
-                -fx-background-radius: 10;
-                -fx-border-color: #3a3a3a;
-                -fx-border-radius: 10;
-                -fx-cursor: hand;
-                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
-                """;
+            -fx-background-color: #2f2f31;
+            -fx-background-radius: 10;
+            -fx-border-color: #3a3a3a;
+            -fx-border-radius: 10;
+            -fx-cursor: hand;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
+        """;
     }
 
     private String hoverPaneStyle() {
         return """
-                -fx-background-color: #353538;
-                -fx-background-radius: 10;
-                -fx-border-color: #0078d7;
-                -fx-border-radius: 10;
-                -fx-cursor: hand;
-                """;
+            -fx-background-color: #353538;
+            -fx-background-radius: 10;
+            -fx-border-color: #0078d7;
+            -fx-border-radius: 10;
+            -fx-cursor: hand;
+        """;
     }
 }

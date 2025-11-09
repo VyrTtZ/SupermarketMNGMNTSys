@@ -1,4 +1,4 @@
-package LinkedList;
+package com.example.supermarketmngmntsys.mylinkedlist;
 
 public class Node<T> {
     T data;

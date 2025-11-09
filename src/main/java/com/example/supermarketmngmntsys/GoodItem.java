@@ -1,10 +1,10 @@
 package com.example.supermarketmngmntsys;
 
-import LinkedList.LinkedList;
+import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 
 public class GoodItem {
     private String name;
-    private LinkedList<Shelf> shelves;
+    private MyLinkedList<Shelf> shelves;
     private double price;
     private int stock;
     private double mass; // grams
@@ -12,7 +12,7 @@ public class GoodItem {
     private String desc;
     private String imgUrl;
 
-    public GoodItem(String name, LinkedList<Shelf> shelves, double price, int stock, double mass, int size, String desc, String imgUrl) {
+    public GoodItem(String name, MyLinkedList<Shelf> shelves, double price, int stock, double mass, int size, String desc, String imgUrl) {
         this.name = name;
         this.shelves = shelves;
         this.price = price;
@@ -47,11 +47,11 @@ public class GoodItem {
         this.name = name;
     }
 
-    public LinkedList<Shelf> getShelves() {
+    public MyLinkedList<Shelf> getShelves() {
         return shelves;
     }
 
-    public void setShelves(LinkedList<Shelf> shelves) {
+    public void setShelves(MyLinkedList<Shelf> shelves) {
         this.shelves = shelves;
     }
 
