@@ -3,10 +3,7 @@ package com.example.supermarketmngmntsys;
 import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -25,8 +22,7 @@ public class Utilities {
             hbox.getChildren().add(tf);
         }
 
-        Button addButton = new Button("Add"); //ADD BUTTON
-        hbox.getChildren().add(addButton);
+
 
         return hbox;
     }
@@ -222,5 +218,76 @@ public class Utilities {
         alert.showAndWait();
     }
     //----------------------------------------------------------------------------------------------------------------------
+    static Object getObject(TreeItem<String> newItem, Supermarket market){
+        boolean found = false;
+        Object ret = new Object();
+        for(Floor f : market.getFloors()){
+            if(("Floor: " + f.getLevel()).equals(newItem.getValue()) && !found){
+                found = true;
+                ret = (Floor)f;
+            }
+            for(FloorArea fa : f.getFloorAreas()){
+                if(("Area: " + fa.getName()).equals(newItem.getValue()) && !found){
+                    found = true;
+                    ret = (FloorArea)fa;
+                }
+                for(Aisle a : fa.getAisles()){
+                    if(("Aisle: " + a.getName()).equals(newItem.getValue()) && !found){
+                        found = true;
+                        ret = (Aisle)a;
+                    }
+                    for(Shelf s : a.getShelves()){
+                        if(("Shelf: " + s.getNumber()).equals(newItem.getValue()) && !found){
+                            found = true;
+                            ret = (Shelf)s;
+                        }
+                        for(GoodItem g : s.getGoods()){
+                            if(("Good: " + g.getName()).equals(newItem.getValue()) && !found){
+                                found = true;
+                                ret = (GoodItem)g;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("class" + ret.getClass());
+        return ret;
+    }
+    static Class getClass(TreeItem<String> newItem, Supermarket market){
+        boolean found = false;
+        Class ret = null;
+        for(Floor f : market.getFloors()){
+            if(("Floor: " + f.getLevel()).equals(newItem.getValue()) && !found){
+                found = true;
+                ret = f.getClass();
+            }
+            for(FloorArea fa : f.getFloorAreas()){
+                if(("Area: " + fa.getName()).equals(newItem.getValue()) && !found){
+                    found = true;
+                    ret = fa.getClass();
+                }
+                for(Aisle a : fa.getAisles()){
+                    if(("Aisle: " + a.getName()).equals(newItem.getValue()) && !found){
+                        found = true;
+                        ret = a.getClass();
+                    }
+                    for(Shelf s : a.getShelves()){
+                        if(("Shelf: " + s.getNumber()).equals(newItem.getValue()) && !found){
+                            found = true;
+                            ret = s.getClass();
+                        }
+                        for(GoodItem g : s.getGoods()){
+                            if(("Good: " + g.getName()).equals(newItem.getValue()) && !found){
+                                found = true;
+                                ret = g.getClass();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
 
 }

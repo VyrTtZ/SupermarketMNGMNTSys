@@ -4,7 +4,7 @@ module com.example.supermarketmngmntsys {
     requires java.desktop;
     requires xstream;
 
-    opens com.example.supermarketmngmntsys to javafx.fxml, com.thoughtworks.xstream;
-    opens com.example.supermarketmngmntsys.mylinkedlist to com.thoughtworks.xstream;
+    opens com.example.supermarketmngmntsys to javafx.fxml, xstream;
+    opens com.example.supermarketmngmntsys.mylinkedlist to xstream;
     exports com.example.supermarketmngmntsys to javafx.graphics;
 }

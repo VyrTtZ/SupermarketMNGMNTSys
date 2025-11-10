@@ -2,9 +2,7 @@ package com.example.supermarketmngmntsys;
 
 import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
@@ -18,8 +16,6 @@ public class MarketController {//FIELDS
     private Pane namePane;
     @FXML
     private TreeView<String> treePane;
-    @FXML
-    private VBox editPane;
     @FXML
     private VBox addOptionsPane;
     @FXML
@@ -40,13 +36,7 @@ public class MarketController {//FIELDS
     private VBox resultPane;
     private Supermarket selectedSupermarket;
     private Object currentObject;
-    private final Map<TreeItem<String>, Object> treeMap = new HashMap<>();
-    private Launcher app;
-    //----------------------------------------------------------------------------------------------------------------------
-    @FXML
-    private void initialize() {//ADDS THE ROWS CREATED IN METHODS BELOW TO THE FXML VIEW
-        setupAddRows();
-    }
+    private Launcher mlauncher;
     //----------------------------------------------------------------------------------------------------------------------
     public void setSupermarket(Supermarket supermarket) {
         this.selectedSupermarket = supermarket;
@@ -85,6 +75,16 @@ public class MarketController {//FIELDS
         buildTree(); //UPDATES THE TREE VIEW
         showAllStock(); //UPDATES THE SHOW STOCK PANE
 
+        addOptionsPane.getChildren().clear(); //CLEARS PANE UPON CALL
+        addOptionsPane.getChildren().add(createFloorRow());
+        addOptionsPane.getChildren().add(createFloorAreaRow());
+        addOptionsPane.getChildren().add(createAisleRow());
+        addOptionsPane.getChildren().add(createShelfRow());
+        addOptionsPane.getChildren().add(createGoodRow());
+        if(currentObject != null)
+            System.out.println(currentObject.toString());
+        else System.out.println("Its null ");
+
         Utilities.drawFloor(gridCanvas, numToFloor(floorNum.getValue())); //DRAWS THE SELECTED FLOOR OF THE SUPERMARKET
     }
     //----------------------------------------------------------------------------------------------------------------------
@@ -95,21 +95,21 @@ public class MarketController {//FIELDS
         return null;
     }
     //----------------------------------------------------------------------------------------------------------------------
-    private void setupAddRows() {//SETUPS THE ROWS USED TO CREATING OBJECTS IN THE MARKET
-        addOptionsPane.getChildren().clear(); //CLEARS PANE UPON CALL
-        addOptionsPane.getChildren().add(createFloorRow());
-        addOptionsPane.getChildren().add(createFloorAreaRow());
-        addOptionsPane.getChildren().add(createAisleRow());
-        addOptionsPane.getChildren().add(createShelfRow());
-        addOptionsPane.getChildren().add(createGoodRow());
-
-    }
-    //----------------------------------------------------------------------------------------------------------------------
     private HBox createFloorRow() {//CREATES AN HBOX FOR ADDING FLOORS
-        final HBox row = Utilities.createRow("Floor:", 3);
+        HBox row = new HBox(10);
+        Label floorLabel = new Label("Floor");
+        TextField levelField = new TextField();
+        levelField.setPromptText("Level");
+        TextField xSizeField = new TextField();
+        xSizeField.setPromptText("X size");
+        TextField ySizeField = new TextField();
+        ySizeField.setPromptText("Mass");
+        Button addButton = new Button("Add"); //ADD BUTTON
 
-        Button addButton = (Button) row.getChildren().get(row.getChildren().size() - 1);
-        addButton.setOnAction(e -> handleAddFloor(row));//CALLS THE ADDING FLOOR METHOD
+        row.getChildren().addAll(floorLabel, levelField, xSizeField, ySizeField, addButton);
+
+        Button addButtonAct = (Button) row.getChildren().get(row.getChildren().size()-1);
+        addButtonAct.setOnAction(e -> handleAddFloor(row));//CALLS THE ADDING FLOOR METHOD
 
         return row;
     }
@@ -145,10 +145,19 @@ public class MarketController {//FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     private HBox createFloorAreaRow() {//SAME METHOD AS THE CREATING HBOX FOR FLOOR
-        final HBox row = Utilities.createRow("FloorArea:", 3);
+        HBox row = new HBox(10);
+        Label floorAreaLabel = new Label("Floor area");
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+        TextField xSizeField = new TextField();
+        xSizeField.setPromptText("X size");
+        TextField ySizeField = new TextField();
+        ySizeField.setPromptText("Mass");
+        Button addButton = new Button("Add");
 
-        Button addButton = (Button) row.getChildren().get(row.getChildren().size() - 1);
-        addButton.setOnAction(e -> handleAddFloorArea(row));
+        row.getChildren().addAll(floorAreaLabel, nameField, xSizeField, ySizeField, addButton);
+        Button addButtonAct = (Button) row.getChildren().get(row.getChildren().size() - 1);
+        addButtonAct.setOnAction(e -> handleAddFloorArea(row));
 
         return row;
     }
@@ -189,14 +198,22 @@ public class MarketController {//FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     private HBox createAisleRow() {//SAME METHOD AS THE CREATING HBOX FOR FLOOR AND FLOOR AREA
-        final HBox row = Utilities.createRow("Aisle:", 3);
+        HBox row = new HBox(10);
+        Label aisleLabel = new Label("Aisle");
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+        TextField xSizeField = new TextField();
+        xSizeField.setPromptText("X size");
+        TextField ySizeField = new TextField();
+        ySizeField.setPromptText("Mass");
+        Button addButton = new Button("Add");
 
         ComboBox<String> temp = new ComboBox<>();//ADDS COMBO BOX TO THE HBOX
         temp.getItems().addAll("Room temperature", "Refrigerated", "Frozen");
-        row.getChildren().add(4, temp);
+        row.getChildren().addAll(aisleLabel, nameField, xSizeField, ySizeField, temp, addButton);
 
-        Button addButton = (Button) row.getChildren().get(row.getChildren().size() - 1);
-        addButton.setOnAction(e -> handleAddAisle(row));
+        Button addButtonAct = (Button) row.getChildren().get(row.getChildren().size() - 1);
+        addButtonAct.setOnAction(e -> handleAddAisle(row));
 
         return row;
     }
@@ -254,10 +271,16 @@ public class MarketController {//FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     private HBox createShelfRow() {//SAME METHOD AS THE CREATING HBOX FOR FLOOR, FLOOR AREA AND AISLES
-        final HBox row = Utilities.createRow("Shelf:", 1);
+        HBox row = new HBox(5);
+        Label shelfLabel = new Label("Shelf");
+        TextField numberField = new TextField();
+        numberField.setPromptText("Shelf number");
+        Button addButton = new Button("Add");
 
-        Button addButton = (Button) row.getChildren().get(row.getChildren().size() - 1);
-        addButton.setOnAction(e -> handleAddShelf(row));
+        row.getChildren().addAll(shelfLabel, numberField, addButton);
+
+        Button addButtonAct = (Button) row.getChildren().get(row.getChildren().size() - 1);
+        addButtonAct.setOnAction(e -> handleAddShelf(row));
 
         return row;
     }
@@ -277,6 +300,7 @@ public class MarketController {//FIELDS
     private VBox createGoodRow() {//SAME METHOD AS THE CREATING HBOX FOR FLOOR, FLOOR AREA, AISLES AND SHELVES
         VBox container = new VBox(5);//DUE TO LARGE AMOUNT OF PARAMETERS 2 ROWS NEED TO BE MADE
         HBox row1 = new HBox(10);
+        Label goodLabel = new Label("Good");
         TextField nameField = new TextField();
         nameField.setPromptText("Name");
         TextField quantityField = new TextField();
@@ -288,7 +312,7 @@ public class MarketController {//FIELDS
         TextField sizeField = new TextField();
         sizeField.setPromptText("Size");
 
-        row1.getChildren().addAll(nameField, quantityField, priceField, massField, sizeField); //ADDS FIELDS ABOVE TO THE FIRST ROW
+        row1.getChildren().addAll(goodLabel, nameField, quantityField, priceField, massField, sizeField); //ADDS FIELDS ABOVE TO THE FIRST ROW
 
         HBox row2 = new HBox(10);
         TextField descField = new TextField();
@@ -315,11 +339,11 @@ public class MarketController {//FIELDS
             return;
         }
         try {//TRIES TO GET DATA FROM THE HBOXES IN THE PARAMETERS
-            TextField nameField = (TextField) row1.getChildren().get(0);
-            TextField quantityField = (TextField) row1.getChildren().get(1);
-            TextField priceField = (TextField) row1.getChildren().get(2);
-            TextField massField = (TextField) row1.getChildren().get(3);
-            TextField sizeField = (TextField) row1.getChildren().get(4);
+            TextField nameField = (TextField) row1.getChildren().get(1);
+            TextField quantityField = (TextField) row1.getChildren().get(2);
+            TextField priceField = (TextField) row1.getChildren().get(3);
+            TextField massField = (TextField) row1.getChildren().get(4);
+            TextField sizeField = (TextField) row1.getChildren().get(5);
 
             TextField descField = (TextField) row2.getChildren().get(0);
             TextField imgField = (TextField) row2.getChildren().get(1);
@@ -334,11 +358,11 @@ public class MarketController {//FIELDS
             String img = imgField.getText().trim();
 
 
-            if(Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
-                s.getGoods().add(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));//ADDS GOOD IF THERE IS NO DUPLICATE
+            if(Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
+                s.getGoods().add(new GoodItem(name, price, quantity, mass, size, desc, img));//ADDS GOOD IF THERE IS NO DUPLICATE
             else{
-                Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
-                        Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity//IF THE ITEM EXISTS JUST ADD THE AMOUNT TO THE EXISTING ITEM
+                Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
+                        Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity//IF THE ITEM EXISTS JUST ADD THE AMOUNT TO THE EXISTING ITEM
                 );
             }
 
@@ -359,11 +383,11 @@ public class MarketController {//FIELDS
     private void handleSmartAdd(HBox row1, HBox row2) {//HANDLES SMART ADD OF PRODUCTS
         //NO NEED FOR A SHELF TO BE SELECTED FOR SMART ADD
         try {//TRIEST TO GET THE DATA FROM THE HBOXES IN PARAMETERS
-            TextField nameField = (TextField) row1.getChildren().get(0);
-            TextField quantityField = (TextField) row1.getChildren().get(1);
-            TextField priceField = (TextField) row1.getChildren().get(2);
-            TextField massField = (TextField) row1.getChildren().get(3);
-            TextField sizeField = (TextField) row1.getChildren().get(4);
+            TextField nameField = (TextField) row1.getChildren().get(1);
+            TextField quantityField = (TextField) row1.getChildren().get(2);
+            TextField priceField = (TextField) row1.getChildren().get(3);
+            TextField massField = (TextField) row1.getChildren().get(4);
+            TextField sizeField = (TextField) row1.getChildren().get(5);
 
             TextField descField = (TextField) row2.getChildren().get(0);
             TextField imgField = (TextField) row2.getChildren().get(1);
@@ -378,13 +402,13 @@ public class MarketController {//FIELDS
             String img = imgField.getText().trim();
 
             //FINDS THE TARGET SHELF USING THE SIMILARITY SHELF METHOD
-            Shelf target = similarityShelf(selectedSupermarket, new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            Shelf target = similarityShelf(selectedSupermarket, new GoodItem(name, price, quantity, mass, size, desc, img));
             //CHECKS FOR THE GOOD ALREADY EXISTING IN THE MARKET AS ABOVE
-            if(Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
-                target.getGoods().add(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img));
+            if(Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket))==null)
+                target.getGoods().add(new GoodItem(name, price, quantity, mass, size, desc, img));
             else{
-                Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
-                        Utilities.checkDupGoodAdd(new GoodItem(name, new MyLinkedList<Shelf>(), price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity
+                Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).setStock(
+                        Utilities.checkDupGoodAdd(new GoodItem(name, price, quantity, mass, size, desc, img), Utilities.allGoods(selectedSupermarket)).getStock()+quantity
                 );
             }
 
@@ -404,11 +428,9 @@ public class MarketController {//FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     private void buildTree() {//METHOD TO BUILD THE TREEVIEW
-        treeMap.clear();//CLEARS THE SPACE FOR THE TREE
 
 
         TreeItem<String> root = new TreeItem<>(selectedSupermarket.getName());//NAME OF MARKET IS ROOT
-        treeMap.put(root, selectedSupermarket);
 
 
         addToTree(selectedSupermarket.getFloors(), root);//ADDS ALL OBJETS TO THE TREEVIEW
@@ -419,21 +441,27 @@ public class MarketController {//FIELDS
 
 
         treePane.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
-            if (newItem != null) currentObject = treeMap.get(newItem);//SETS THE CURRENT ITEM IN THE CONTROLLER TO BE WHICHEVER PART OF THE TREEVIEW IS CLICKED ON
+            if (newItem != null)
+                currentObject = Utilities.getObject(newItem, selectedSupermarket);
         });
 
 
         treePane.setOnMouseClicked(event -> { //REMOVE METHOD
             if (event.getButton() == MouseButton.SECONDARY) {
                 TreeItem<String> selectedItem = treePane.getSelectionModel().getSelectedItem();//GETS THE SELECTED TREE ITEM
+
                 if (selectedItem != null && selectedItem != root) {//CANT BE ROOT
-                    Object obj = treeMap.get(selectedItem);
+                    Object obj = Utilities.getObject(selectedItem, selectedSupermarket);
+
                     TreeItem<String> parentItem = selectedItem.getParent();
-                    Object parentObj = treeMap.get(parentItem);
+                    Object parentObj = Utilities.getObject(parentItem, selectedSupermarket);
+                    Class classOfSelection = Utilities.getClass(selectedItem, selectedSupermarket);
 
-                    sliderPane.getChildren().clear(); //SLIDERPANE FOR PARTIAL REMOVAL OF GOODS
+                    //SLIDERPANE FOR PARTIAL REMOVAL OF GOODS
 
-                    if (obj instanceof GoodItem good) { //EXCEPTION CASE FOR GOODS
+                    if (classOfSelection == GoodItem.class) { //EXCEPTION CASE FOR GOODS
+                        System.out.println("tester");
+                        GoodItem good = (GoodItem)obj;
                         sliderPane.setVisible(true);//SETS SLIDER VISIBILITY
 
                         Label label = new Label("Remove quantity for: " + good.getName());
@@ -441,22 +469,21 @@ public class MarketController {//FIELDS
 
                         Slider slider = new Slider(1, good.getStock(), 1);
                         slider.setMajorTickUnit((int)Math.pow(good.getStock(), 0.5));//TICKS ARE THE SQUARES OF FULL AMOUNT
-                        slider.setMinorTickCount(0);///STARTS AT 0
+                        slider.setMinorTickCount(0);//STARTS AT 0
                         slider.setShowTickLabels(true);
 
                         Button removeButton = new Button("Remove");
                         removeButton.setOnAction(e -> {
                             int amount = (int) slider.getValue();
-                            if (amount >= good.getStock()) {//FULL REMOVAL
+                            if (amount == good.getStock()) {//FULL REMOVAL
                                 if (parentObj instanceof Shelf parent)
                                     parent.getGoods().remove(good);//REMOVAL IN LINKED LIST
                                 parentItem.getChildren().remove(selectedItem);//REMOVAL IN UI
-                                treeMap.remove(selectedItem);
+                                Utilities.getParentShelf(selectedSupermarket, good).getGoods().remove(good);
                             } else {//PARTIAL REMOVAL
                                 good.setStock(good.getStock() - amount);
-                                selectedItem.setValue("Good: " + good.getName());
                             }
-                            sliderPane.getChildren().clear();//CLEARS DATA IN SLIDER
+                            sliderPane.getChildren().clear();//CLEARS DATA IN SLIDER AVOID OVERFLOW
                             sliderPane.setVisible(false);//CLOSES TO SLIDER
                             updateUI();
                         });
@@ -464,13 +491,13 @@ public class MarketController {//FIELDS
                         sliderPane.getChildren().addAll(label, slider, removeButton);
 
                     } else {//NORMAL REMOVALS
-                        if (parentObj instanceof Supermarket s && obj instanceof Floor f) s.getFloors().remove(f);
-                        else if (parentObj instanceof Floor fParent && obj instanceof FloorArea fa) fParent.getFloorAreas().remove(fa);
-                        else if (parentObj instanceof FloorArea faParent && obj instanceof Aisle a) faParent.getAisles().remove(a);
+                        if (parentObj instanceof Supermarket s && obj instanceof Floor fObj) s.getFloors().remove(fObj);
+                        else if (parentObj instanceof Floor fParent && obj instanceof FloorArea faObj) fParent.getFloorAreas().remove(faObj);
+                        else if (parentObj instanceof FloorArea faParent && obj instanceof Aisle aObj) faParent.getAisles().remove(aObj);
                         else if (parentObj instanceof Aisle aParent && obj instanceof Shelf sObj) aParent.getShelves().remove(sObj);
 
                         parentItem.getChildren().remove(selectedItem);
-                        treeMap.remove(selectedItem);
+                        //Utilities.getObject(selectedItem, selectedSupermarket)
                     }
                 }
             }
@@ -482,7 +509,7 @@ public class MarketController {//FIELDS
 
         for (T item : list) {//GETS ITEMS IN THE LIST
             String name;//SETS NAME
-            if (item instanceof Floor f) name = "Floor " + f.getLevel();
+            if (item instanceof Floor f) name = "Floor: " + f.getLevel();
             else if (item instanceof FloorArea fa) name = "Area: " + fa.getName();
             else if (item instanceof Aisle a) name = "Aisle: " + a.getName();
             else if (item instanceof Shelf s) name = "Shelf: " + s.getNumber();
@@ -490,13 +517,17 @@ public class MarketController {//FIELDS
             else name = item.toString();
 
             TreeItem<String> node = new TreeItem<>(name);//CREATE NEW TREE VIEW NODE
-            treeMap.put(node, item);//ADD THE NODE
+
+            node.setExpanded(true);
             parent.getChildren().add(node);
 
 
             //RECURSIVELY ADDS OBJECTS UNTIL THERE ARE NO MORE
             if (item instanceof Floor f) addToTree(f.getFloorAreas(), node);
-            else if (item instanceof FloorArea fa) addToTree(fa.getAisles(), node);
+            else if (item instanceof FloorArea fa) {
+                addToTree(fa.getAisles(), node);
+                System.out.println(node.getParent().toString());
+            }
             else if (item instanceof Aisle a) addToTree(a.getShelves(), node);
             else if (item instanceof Shelf s) addToTree(s.getGoods(), node);
         }
@@ -504,7 +535,7 @@ public class MarketController {//FIELDS
     //----------------------------------------------------------------------------------------------------------------------
     @FXML
     private void ret() throws Exception {//RETURN METHOD FOR GOING BACK TO THE DASHBOARD
-        app.showDashboard();
+        mlauncher.showDashboard();
     }
     //----------------------------------------------------------------------------------------------------------------------
     public Shelf similarityShelf(Supermarket selectedSupermarket, GoodItem newGood) { //https://mayurdhvajsinhjadeja.medium.com/jaccard-similarity-34e2c15fb524
@@ -539,7 +570,7 @@ public class MarketController {//FIELDS
                             double attributePenalty = priceDiff + massDiff + sizeDiff;
 
                             //SIMILARITIES PUT TOGETHER
-                            double finalScore = textSimilarity * (1.0 / (1.0 + Math.pow(Math.E, attributePenalty)));
+                            double finalScore = textSimilarity + (1.0 / (1.0 + Math.pow(Math.E, attributePenalty)));
 
                             if (finalScore > bestSimilarity) { //IF THE SIMILARITY IS HIGHER THAN CURRENTLY SAVED CHANGE BEST SHELF
                                 bestSimilarity = finalScore;
@@ -554,7 +585,7 @@ public class MarketController {//FIELDS
         return bestShelf;
     }
     //----------------------------------------------------------------------------------------------------------------------
-    public MyLinkedList<String> tokenize(String text) {//TOKENIZES A STRING
+    public MyLinkedList<String> tokenize(String text) {//TOKENIZES A STRING INTO LIST
         MyLinkedList<String> tokens = new MyLinkedList<String>();
         if (text == null || text.isEmpty()) return tokens;
 
@@ -564,6 +595,8 @@ public class MarketController {//FIELDS
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
+
+
             if (Character.isLetterOrDigit(c)) {//DIVIDES THE LONGER STRINGS INTO LIST OF WORDS
                 word = word + c;
             }
@@ -571,6 +604,8 @@ public class MarketController {//FIELDS
                 tokens.add(word);
                 word = "";
             }
+
+
         }
 
         if (!word.isEmpty()) tokens.add(word);
@@ -586,22 +621,20 @@ public class MarketController {//FIELDS
         int intersection = 0;
         int union = 0;
 
-        MyLinkedList<String> list2Copy = list2;
-
         for (int i = 0; i < list1.size(); i++) {
             String token1 = list1.get(i);
 
-            for (int j = 0; j < list2Copy.size(); j++) {//COMPARE FIRST TOKEN TO ALL TOKENS IN LIST2 AND INCREASE INTERSECTION
-                if (token1.equals(list2Copy.get(j))) {
+            for (int j = 0; j < list2.size(); j++) {//COMPARE FIRST TOKEN TO ALL TOKENS IN LIST2 AND INCREASE INTERSECTION
+                if (token1.equals(list2.get(j))) {
                     intersection++;
-                    list2Copy.remove(list2Copy.get(j));//REMOVE ALREADY USED VALUE
+                    list2.remove(list2.get(j));//REMOVE ALREADY USED VALUE
                     break;
                 }
             }
             union++;//ALWAYS INCREMENT UNION
         }
 
-        union += list2Copy.size();//UNION IS THE FIRST SET + THE 2ND SET WITH NO REPEATS
+        union += list2.size();//UNION IS THE FIRST SET + THE 2ND SET WITH NO REPEATS
 
         if (union == 0) {
             return 0.0;
@@ -744,8 +777,8 @@ public class MarketController {//FIELDS
         }
     }
     //----------------------------------------------------------------------------------------------------------------------
-    public void setLauncher(Launcher app) {
-        this.app = app;
+    public void setLauncher(Launcher launcher) {
+        this.mlauncher = launcher;
     }
 }
 

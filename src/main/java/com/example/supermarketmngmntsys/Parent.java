@@ -1,8 +1,9 @@
 package com.example.supermarketmngmntsys;
 
 import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
-import java.io.FileReader;
-import java.io.FileWriter;
+
+import java.io.*;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.AnyTypePermission;
@@ -33,20 +34,10 @@ public class Parent {
         return xstream;
     }
     //----------------------------------------------------------------------------------------------------------------------
-    public static void save() throws Exception { //ATTEMPTED SAVE METHOD
-        XStream xstream = configureXStream();
 
-        try (FileWriter writer = new FileWriter("supermarketmngmntSys.xml")) {
-            xstream.toXML(markets, writer);
-        }
-    }
     //----------------------------------------------------------------------------------------------------------------------
     public static void load() throws Exception { //ATTEMPTED LOAD METHOD
-        XStream xstream = configureXStream();
 
-        try (FileReader reader = new FileReader("supermarketmngmntSys.xml")) {
-            markets = (MyLinkedList<Supermarket>) xstream.fromXML(reader);
-        }
     }
     //----------------------------------------------------------------------------------------------------------------------
 }

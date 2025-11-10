@@ -4,7 +4,6 @@ import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
 //----------------------------------------------------------------------------------------------------------------------
 public class GoodItem { //FIELDS
     private String name;
-    private MyLinkedList<Shelf> shelves;
     private double price;
     private int stock;
     private double mass; // grams
@@ -12,9 +11,8 @@ public class GoodItem { //FIELDS
     private String desc;
     private String imgUrl;
     //----------------------------------------------------------------------------------------------------------------------
-    public GoodItem(String name, MyLinkedList<Shelf> shelves, double price, int stock, double mass, int size, String desc, String imgUrl) { //CONSTRUCTOR
+    public GoodItem(String name, double price, int stock, double mass, int size, String desc, String imgUrl) { //CONSTRUCTOR
         setName(name);
-        setShelves(shelves);
         setPrice(price);
         setStock(stock);
         setMass(mass);
@@ -45,14 +43,6 @@ public class GoodItem { //FIELDS
     //----------------------------------------------------------------------------------------------------------------------
     public void setName(String name) {
         this.name = name;
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    public MyLinkedList<Shelf> getShelves() {
-        return shelves;
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    public void setShelves(MyLinkedList<Shelf> shelves) {
-        this.shelves = shelves;
     }
     //----------------------------------------------------------------------------------------------------------------------
     public double getPrice() {

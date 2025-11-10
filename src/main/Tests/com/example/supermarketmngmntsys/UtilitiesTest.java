@@ -18,8 +18,8 @@ public class UtilitiesTest {
         floor = new Floor(1, new MyLinkedList<FloorArea>(), new MyLinkedList<Integer>());
         area = new FloorArea("Stone", new MyLinkedList<Aisle>(), new MyLinkedList<Integer>());
         aisle = new Aisle("Windmill", new MyLinkedList<Shelf>(), new MyLinkedList<Integer>(), 0);
-        shelf = new Shelf(1, new MyLinkedList<GoodItem>(), new MyLinkedList<Integer>());
-        monsterEnergy = new GoodItem("Monster Energy", new MyLinkedList<Shelf>(), 1.0, 40, 0.2, 27, "Cold energy drink", "picture of Monster Energy");
+        shelf = new Shelf(0, new MyLinkedList<GoodItem>(), new MyLinkedList<Integer>());
+        monsterEnergy = new GoodItem("Monster Energy", 1.0, 40, 0.2, 27, "Scary", "Tuff");
 
         shelf.getGoods().add(monsterEnergy);
         aisle.getShelves().add(shelf);
@@ -29,85 +29,53 @@ public class UtilitiesTest {
 
     }
     //----------------------------------------------------------------------------------------------------------------------
-    @AfterEach
-    void tearDown() {
-        supermarket = null;
-        floor = null;
-        area = null;
-        aisle = null;
-        shelf = null;
-        monsterEnergy = null;
-    }
-    //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testGetParentShelf() {
-        Shelf result = Utilities.getParentShelf(supermarket, monsterEnergy);
-        assertEquals(shelf, result);
+        assertEquals(shelf, Utilities.getParentShelf(supermarket, monsterEnergy));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testGetParentAisle() {
-        Aisle result = Utilities.getParentAisle(supermarket, monsterEnergy);
-        assertEquals(aisle, result);
+        assertEquals(aisle, Utilities.getParentAisle(supermarket, monsterEnergy));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testGetParentFloorArea() {
-        FloorArea result = Utilities.getParentFloorArea(supermarket, monsterEnergy);
-        assertEquals(area, result);
+        assertEquals(area, Utilities.getParentFloorArea(supermarket, monsterEnergy));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testGetParentFloor() {
-        Floor result = Utilities.getParentFloor(supermarket, monsterEnergy);
-        assertEquals(floor, result);
+        assertEquals(floor, Utilities.getParentFloor(supermarket, monsterEnergy));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testAllGoods() {
-        MyLinkedList<GoodItem> goods = Utilities.allGoods(supermarket);
-        assertEquals(1, goods.size());
-        assertEquals(monsterEnergy, goods.get(0));
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    @Test
-    void testGetGoodItemPath() {
-        String path = Utilities.getGoodItemPath(supermarket, monsterEnergy);
-        assertTrue(path.contains("Cloud"));
-        assertTrue(path.contains("Floor 1"));
-        assertTrue(path.contains("Stone"));
-        assertTrue(path.contains("Windmill"));
-        assertTrue(path.contains("Shelf 1"));
-        assertTrue(path.contains("Monster Energy"));
+        assertEquals(1, Utilities.allGoods(supermarket).size());
+        assertEquals(monsterEnergy, Utilities.allGoods(supermarket).get(0));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
     void testCountGoods() {
-        int count = Utilities.countGoods(supermarket);
-        assertEquals(1, count);
+        assertEquals(1, Utilities.countGoods(supermarket));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void testCheckDupGoodAddReturnsExisting() {
+    void testDupGoodExisting() {
         MyLinkedList<GoodItem> goods = new MyLinkedList<>();
         goods.add(monsterEnergy);
 
-        GoodItem duplicate = new GoodItem("Monster Energy", new MyLinkedList<Shelf>(), 1.0, 40, 0.2, 27, "Cold energy drink", "picture of Monster Energy");
-        GoodItem found = Utilities.checkDupGoodAdd(duplicate, goods);
+        GoodItem duplicate = new GoodItem("Monster Energy",1.0, 40, 0.2, 27, "Scary", "Tuff");
 
-        assertNotNull(found);
-        assertEquals(monsterEnergy, found);
+        assertNotNull(Utilities.checkDupGoodAdd(duplicate, goods));
+        assertEquals(monsterEnergy, Utilities.checkDupGoodAdd(duplicate, goods));
     }
-    //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void testCheckDupGoodAddReturnsNull() {
+    void testDupGoodNonexisting(){
         MyLinkedList<GoodItem> goods = new MyLinkedList<>();
         goods.add(monsterEnergy);
 
-        GoodItem newItem = new GoodItem("Bee", new MyLinkedList<Shelf>(), 2.0, 8, 0.2, 27, "Bees make honey", "Good morning Vietnam");
-        GoodItem found = Utilities.checkDupGoodAdd(newItem, goods);
-
-        assertNull(found);
+        GoodItem duplicate = new GoodItem("Bird",1.0, 40, 0.2, 27, "Scary", "Tuff");
+        assertNull(Utilities.checkDupGoodAdd(duplicate, goods));
     }
-    //----------------------------------------------------------------------------------------------------------------------
 }

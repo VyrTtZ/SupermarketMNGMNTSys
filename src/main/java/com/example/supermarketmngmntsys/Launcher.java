@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 //----------------------------------------------------------------------------------------------------------------------
 public class Launcher extends Application {//FIELDS
     private Stage primaryStage;
-    private Supermarket currentSupermarket;
     //----------------------------------------------------------------------------------------------------------------------
     @Override
     public void start(Stage stage) throws Exception {
@@ -26,7 +25,6 @@ public class Launcher extends Application {//FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     public void showMarket(Supermarket supermarket) throws Exception {
-        this.currentSupermarket = supermarket;//UPDATES THE CURRENT SUPERMARKET WITH THE PARAMETER
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/supermarketmngmntsys/market-view.fxml"));//LOADS MARKET VIEW
         Scene scene = new Scene(loader.load());//SETS THE SCENE WITH THE FXML
         MarketController controller = loader.getController();//SETS UP THE CONTROLLER FOR THE FXML

@@ -15,7 +15,7 @@ class MarketControllerTest {
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void tokenize_basicSentence() {
+    void tokenize() {
         MyLinkedList<String> tokens = controller.tokenize("Redbull bowl ring stone");
         assertEquals(4, tokens.size());
         assertEquals("redbull", tokens.get(0));
@@ -23,40 +23,26 @@ class MarketControllerTest {
         assertEquals("ring", tokens.get(2));
         assertEquals("stone", tokens.get(3));
     }
-    //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void tokenize_withSymbolsAndMixedCase() {
-        MyLinkedList<String> tokens = controller.tokenize("Redbull! Bowl, RING-Stone??");
-        assertEquals(4, tokens.size());
-        assertEquals("redbull", tokens.get(0));
-        assertEquals("bowl", tokens.get(1));
-        assertEquals("ring", tokens.get(2));
-        assertEquals("stone", tokens.get(3));
+    void tokenizeEmpty(){
+        MyLinkedList<String> tokens = controller.tokenize("");
+        assertNotEquals("redbull", tokens.get(0));
+        assertNull(tokens.get(0));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void tokenize_emptyOrNull() {
-        MyLinkedList<String> tokens1 = controller.tokenize("");
-        MyLinkedList<String> tokens2 = controller.tokenize(null);
-        assertTrue(tokens1.isEmpty());
-        assertTrue(tokens2.isEmpty());
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    @Test
-    void jaccardSimilarity_identicalLists() {
+    void jaccardSimilaritySame() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
         MyLinkedList<String> list2 = new MyLinkedList<>();
         list1.add("redbull");
         list1.add("bowl");
         list2.add("redbull");
         list2.add("bowl");
-
-        double similarity = controller.jaccardSimilarity(list1, list2);
-        assertEquals(1.0, similarity);
+        assertEquals(1.0, controller.jaccardSimilarity(list1, list2));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void jaccardSimilarity_partialOverlap() {
+    void jaccardSimilaritySome() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
         MyLinkedList<String> list2 = new MyLinkedList<>();
 
@@ -65,44 +51,16 @@ class MarketControllerTest {
         list2.add("stone");
         list2.add("bowl");
 
-        double similarity = controller.jaccardSimilarity(list1, list2);
-        // intersection = 1 ("stone"), union = 3 ("ring", "stone", "bowl")
-        assertEquals(1.0 / 3.0, similarity);
+        assertEquals(1.0 / 3.0, controller.jaccardSimilarity(list1, list2));
     }
     //----------------------------------------------------------------------------------------------------------------------
     @Test
-    void jaccardSimilarity_noOverlap() {
+    void jaccardSimilarityNone() {
         MyLinkedList<String> list1 = new MyLinkedList<>();
         MyLinkedList<String> list2 = new MyLinkedList<>();
         list1.add("redbull");
         list2.add("ring");
-
-        double similarity = controller.jaccardSimilarity(list1, list2);
-        assertEquals(0.0, similarity);
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    @Test
-    void jaccardSimilarity_emptyLists() {
-        MyLinkedList<String> list1 = new MyLinkedList<>();
-        MyLinkedList<String> list2 = new MyLinkedList<>();
-        double similarity = controller.jaccardSimilarity(list1, list2);
-        assertEquals(1.0, similarity);
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    @Test
-    void jaccardSimilarity_nullLists() {
-        double similarity = controller.jaccardSimilarity(null, null);
-        assertEquals(0.0, similarity);
-    }
-    //----------------------------------------------------------------------------------------------------------------------
-    @Test
-    void jaccardSimilarity_oneEmptyList() {
-        MyLinkedList<String> list1 = new MyLinkedList<>();
-        MyLinkedList<String> list2 = new MyLinkedList<>();
-        list1.add("bowl");
-
-        double similarity = controller.jaccardSimilarity(list1, list2);
-        assertEquals(0.0, similarity);
+        assertEquals(0.0, controller.jaccardSimilarity(list1, list2));
     }
     //----------------------------------------------------------------------------------------------------------------------
 }

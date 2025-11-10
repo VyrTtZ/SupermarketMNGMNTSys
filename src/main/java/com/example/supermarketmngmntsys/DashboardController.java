@@ -1,20 +1,25 @@
 package com.example.supermarketmngmntsys;
 
 import com.example.supermarketmngmntsys.mylinkedlist.MyLinkedList;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+
+import java.io.*;
+
 //----------------------------------------------------------------------------------------------------------------------
 public class DashboardController { //FIELDS
     @FXML private GridPane marketsGrid;
     @FXML public TextField textInDash;
-    private Launcher launcher;
+    private Launcher mlauncher;
     private MyLinkedList<Supermarket> supermarkets;
     //----------------------------------------------------------------------------------------------------------------------
     public void setLauncher(Launcher launcher) {// SETS THE LAUNCHER FOR THE CONTROLLER INSTANCE AND SETS THE SUPERMARKET LIST + REFRESHES GRID FOR ANY NEW MARKETS
-        this.launcher = launcher;
+        mlauncher = launcher;
         this.supermarkets = Parent.getMarkets();
         refreshGrid();
     }
@@ -110,9 +115,12 @@ public class DashboardController { //FIELDS
         """);//SETS THE ADD BUTTON STYLING
         saveButton.setOnAction(e -> {//ADDS ON ACTION SAVING THE MARKET TO XML
             try {
-                Parent.save();
+                    XStream xStream = new XStream(new DomDriver());
+                    ObjectOutputStream objectOutputStream = xStream.createObjectOutputStream(new FileWriter("superMarketManagementSys.xml"));
+                    objectOutputStream.writeObject(market);
+                    objectOutputStream.close();
             } catch (Exception ex) {
-                Utilities.showAlert("Error");
+                ex.printStackTrace();
             }
         });
         //--------------------------------------------------
@@ -143,16 +151,22 @@ public class DashboardController { //FIELDS
     }
     //----------------------------------------------------------------------------------------------------------------------
     private void openSupermarket(Supermarket market) {//OPENS SUPERMARKET
-        if (launcher == null) { //CHECKS IF THE LAUNCHER HAS BEEN SET
-            return;
-        }
         try {//SHOWS MARKET + TRANSFER TO THE MARKET CONTROLLER
-            launcher.showMarket(market);
+            mlauncher.showMarket(market);
         } catch (Exception e) {
             e.printStackTrace();
-            Utilities.showAlert("Failed to open: " + e.getMessage());
         }
     }
     //----------------------------------------------------------------------------------------------------------------------
+    @FXML
+    private void loadMarket() throws IOException, ClassNotFoundException {
+        XStream xStream = new XStream(new DomDriver());
+        XStream.setupDefaultSecurity(xStream);
+        xStream.allowTypes(new Class[]{Supermarket.class, Floor.class, FloorArea.class, Aisle.class, Shelf.class, GoodItem.class});
+        ObjectInputStream is = xStream.createObjectInputStream(new FileReader("superMarketManagementSys.xml"));
+        supermarkets.add((Supermarket) is.readObject());
+        is.close();
+        refreshGrid();
+    }
 
 }
